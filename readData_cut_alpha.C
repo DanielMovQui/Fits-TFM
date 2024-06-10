@@ -236,7 +236,7 @@ TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) 
 TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
 TF1 *bw7 = new TF1("m7", "[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
 TF1 *bw8 = new TF1("m8", "[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
-
+TF1 *bw9 = new TF1("m9", "[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
 
 // Definir parámetros iniciales para cada Breit-Wigner
 bw1->SetParameters(300, 9.18, 0.004);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
@@ -245,11 +245,12 @@ bw3->SetParameters(300, 9.85, 0.10);
 bw4->SetParameters(300, 10.28, 0.10);
 bw5->SetParameters(300, 10.6, 0.2);
 bw6->SetParameters(300, 11.2, 0.2);
-bw7->SetParameters(300, 11.66, 0.2);
-bw8->SetParameters(300, 11.9, 0.2);
+bw7->SetParameters(300, 11.45, 0.2);
+bw8->SetParameters(300, 11.66, 0.2);
+bw9->SetParameters(300, 11.9, 0.2);
 
 // Definir total dada por la suma de los 8 picos
-TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])+[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])+[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 8.5, 14);
+TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])+[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])+[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])+[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 8.5, 14);
 
 // Ajustar cada función a los datos teniendo en cuenta la anterior
 exTotalH->Fit(bw1, "R");
@@ -260,10 +261,10 @@ exTotalH->Fit(bw5, "R+");
 exTotalH->Fit(bw6, "R+");
 exTotalH->Fit(bw7, "R+");
 exTotalH->Fit(bw8, "R+");
-
+exTotalH->Fit(bw9, "R+");
 
 // Obtener los parámetros del fit
-Double_t par[24];
+Double_t par[27];
 bw1->GetParameters(&par[0]);
 bw2->GetParameters(&par[3]);
 bw3->GetParameters(&par[6]);
@@ -272,6 +273,7 @@ bw5->GetParameters(&par[12]);
 bw6->GetParameters(&par[15]);
 bw7->GetParameters(&par[18]);
 bw8->GetParameters(&par[21]);
+bw9->GetParameters(&par[24]);
 
 total->SetParameters(par);
 
@@ -300,6 +302,9 @@ total->SetParName(20, "Width7");
 total->SetParName(21, "Amp8");
 total->SetParName(22, "Mean8");
 total->SetParName(23, "Width8");
+total->SetParName(24, "Amp9");
+total->SetParName(25, "Mean9");
+total->SetParName(26, "Width9");
 
 // Establecer límites de parámetros (si es necesario)
 total->SetParLimits(1, 9.17, 9.19);
@@ -311,13 +316,15 @@ total->SetParLimits(8, 0.05, 0.3);
 total->SetParLimits(10, 10.28, 10.38);
 total->SetParLimits(11, 0.05, 0.3);
 total->SetParLimits(13, 10.6, 10.7);
-total->SetParLimits(14, 0.01, 0.2);
+total->SetParLimits(14, 0.01, 0.3);
 total->SetParLimits(16, 11.2, 11.3);
-total->SetParLimits(17, 0.01, 0.2);
-total->SetParLimits(19, 11.66, 11.67);
-total->SetParLimits(20, 0.153, 0.155);
-total->SetParLimits(22, 11.90, 11.91);
-total->SetParLimits(23, 0.282, 0.284);
+total->SetParLimits(17, 0.01, 0.18);
+total->SetParLimits(19, 11.45, 11.50);
+total->SetParLimits(20, 0.05, 0.15);
+total->SetParLimits(22, 11.66, 11.67);
+total->SetParLimits(23, 0.153, 0.155);
+total->SetParLimits(25, 11.90, 11.91);
+total->SetParLimits(26, 0.282, 0.284);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
 exTotalH->Fit(total, "R+");
@@ -346,6 +353,7 @@ TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] 
 TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
 TF1 *new_bw7 = new TF1("new_m7", "[18] / ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
 TF1 *new_bw8 = new TF1("new_m8", "[21] / ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
+TF1 *new_bw9 = new TF1("new_m8", "[24] / ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
 
 
 new_bw1->SetParameters(par_total);
@@ -356,6 +364,7 @@ new_bw5->SetParameters(par_total);
 new_bw6->SetParameters(par_total);
 new_bw7->SetParameters(par_total);
 new_bw8->SetParameters(par_total);
+new_bw9->SetParameters(par_total);
 
 // Configurar nombres de parámetros
 new_bw1->SetParName(0, "Amp1");
@@ -390,6 +399,10 @@ new_bw8->SetParName(21, "Amp8");
 new_bw8->SetParName(22, "Mean8");
 new_bw8->SetParName(23, "Width8");
 
+new_bw9->SetParName(24, "Amp9");
+new_bw9->SetParName(25, "Mean9");
+new_bw9->SetParName(26, "Width9");
+
 // Dibujar las nuevas funciones en el mismo Canvas
 new_bw1->SetLineColor(kBlack);
 new_bw2->SetLineColor(kBlack);
@@ -399,6 +412,8 @@ new_bw5->SetLineColor(kBlack);
 new_bw6->SetLineColor(kBlack);
 new_bw7->SetLineColor(kBlack);
 new_bw8->SetLineColor(kBlack);
+new_bw9->SetLineColor(kBlack);
+
 
 new_bw1->Draw("SAME");
 new_bw2->Draw("SAME");
@@ -408,6 +423,7 @@ new_bw5->Draw("SAME");
 new_bw6->Draw("SAME");
 new_bw7->Draw("SAME");
 new_bw8->Draw("SAME");
+new_bw9->Draw("SAME");
 
 // Mostrar el Canvas
 gPad->Update();
