@@ -236,7 +236,10 @@ TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) 
 TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
 TF1 *bw7 = new TF1("m7", "[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
 TF1 *bw8 = new TF1("m8", "[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
-TF1 *bw9 = new TF1("m9", "[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
+TF1 *bw9 = new TF1("m9", "[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 14);
+TF1 *bw10 = new TF1("m10", "[27]/ ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
+TF1 *bw11 = new TF1("m11", "[30]/ ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
+TF1 *bw12 = new TF1("m12", "[33]/ ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
 
 // Definir parámetros iniciales para cada Breit-Wigner
 bw1->SetParameters(300, 9.18, 0.004);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
@@ -248,9 +251,11 @@ bw6->SetParameters(300, 11.2, 0.2);
 bw7->SetParameters(300, 11.45, 0.2);
 bw8->SetParameters(300, 11.66, 0.2);
 bw9->SetParameters(300, 11.9, 0.2);
-
+bw10->SetParameters(300, 12.5, 0.2);
+bw11->SetParameters(300, 13.25, 0.2);
+bw12->SetParameters(300, 13.61, 0.2);
 // Definir total dada por la suma de los 8 picos
-TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])+[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])+[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])+[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 8.5, 14);
+TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])+[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])+[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])+[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])+[27]/ ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])+[30]/ ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])+[33]/ ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 8.5, 14.5);
 
 // Ajustar cada función a los datos teniendo en cuenta la anterior
 exTotalH->Fit(bw1, "R");
@@ -262,9 +267,11 @@ exTotalH->Fit(bw6, "R+");
 exTotalH->Fit(bw7, "R+");
 exTotalH->Fit(bw8, "R+");
 exTotalH->Fit(bw9, "R+");
-
+exTotalH->Fit(bw10, "R+");
+exTotalH->Fit(bw11, "R+");
+exTotalH->Fit(bw12, "R+");
 // Obtener los parámetros del fit
-Double_t par[27];
+Double_t par[36];
 bw1->GetParameters(&par[0]);
 bw2->GetParameters(&par[3]);
 bw3->GetParameters(&par[6]);
@@ -274,7 +281,9 @@ bw6->GetParameters(&par[15]);
 bw7->GetParameters(&par[18]);
 bw8->GetParameters(&par[21]);
 bw9->GetParameters(&par[24]);
-
+bw10->GetParameters(&par[27]);
+bw11->GetParameters(&par[30]);
+bw12->GetParameters(&par[33]);
 total->SetParameters(par);
 
 // Configurar nombres de parámetros uno por uno
@@ -305,7 +314,15 @@ total->SetParName(23, "Width8");
 total->SetParName(24, "Amp9");
 total->SetParName(25, "Mean9");
 total->SetParName(26, "Width9");
-
+total->SetParName(27, "Amp10");
+total->SetParName(28, "Mean10");
+total->SetParName(29, "Width10");
+total->SetParName(30, "Amp11");
+total->SetParName(31, "Mean11");
+total->SetParName(32, "Width11");
+total->SetParName(33, "Amp12");
+total->SetParName(34, "Mean12");
+total->SetParName(35, "Width12");
 // Establecer límites de parámetros (si es necesario)
 total->SetParLimits(1, 9.17, 9.19);
 total->SetParLimits(2, 0.0, 0.3);
@@ -325,6 +342,12 @@ total->SetParLimits(22, 11.66, 11.67);
 total->SetParLimits(23, 0.153, 0.155);
 total->SetParLimits(25, 11.90, 11.91);
 total->SetParLimits(26, 0.282, 0.284);
+total->SetParLimits(28, 12.5, 12.51);
+total->SetParLimits(29, 0.576, 0.577);
+total->SetParLimits(31, 13.25, 13.26);
+total->SetParLimits(32, 0.39, 0.4);
+total->SetParLimits(34, 13.61, 13.62);
+total->SetParLimits(35, 0.34, 0.35);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
 exTotalH->Fit(total, "R+");
@@ -332,6 +355,7 @@ exTotalH->Fit(total, "R+");
 // Configurar opciones de visualización para la línea de ajuste resultante
 total->SetLineColor(kRed);
 total->SetLineWidth(2);
+total->SetNpx(5000);
 exTotalH->SetTitle("Energy distribution ^{7}Li and #alpha"); 
 exTotalH->SetXTitle("E (MeV)");
 exTotalH->SetYTitle("Counts");
@@ -341,7 +365,7 @@ exTotalH->Draw("HIST");
 total->Draw("SAME");
 
 // Obtener los parámetros ajustados de la función total
-Double_t par_total[24];
+Double_t par_total[36];
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Breit-Wigner con los parámetros ajustados
@@ -353,8 +377,23 @@ TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] 
 TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
 TF1 *new_bw7 = new TF1("new_m7", "[18] / ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
 TF1 *new_bw8 = new TF1("new_m8", "[21] / ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
-TF1 *new_bw9 = new TF1("new_m8", "[24] / ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
+TF1 *new_bw9 = new TF1("new_m9", "[24] / ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
+TF1 *new_bw10 = new TF1("new_m10", "[27] / ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
+TF1 *new_bw11 = new TF1("new_m11", "[30] / ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
+TF1 *new_bw12 = new TF1("new_m11", "[33] / ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
 
+new_bw1->SetNpx(5000);
+new_bw2->SetNpx(5000);
+new_bw3->SetNpx(5000);
+new_bw4->SetNpx(5000);
+new_bw5->SetNpx(5000);
+new_bw6->SetNpx(5000);
+new_bw7->SetNpx(5000);
+new_bw8->SetNpx(5000);
+new_bw9->SetNpx(5000);
+new_bw10->SetNpx(5000);
+new_bw11->SetNpx(5000);
+new_bw12->SetNpx(5000);
 
 new_bw1->SetParameters(par_total);
 new_bw2->SetParameters(par_total);
@@ -365,7 +404,9 @@ new_bw6->SetParameters(par_total);
 new_bw7->SetParameters(par_total);
 new_bw8->SetParameters(par_total);
 new_bw9->SetParameters(par_total);
-
+new_bw10->SetParameters(par_total);
+new_bw11->SetParameters(par_total);
+new_bw12->SetParameters(par_total);
 // Configurar nombres de parámetros
 new_bw1->SetParName(0, "Amp1");
 new_bw1->SetParName(1, "Mean1");
@@ -403,6 +444,18 @@ new_bw9->SetParName(24, "Amp9");
 new_bw9->SetParName(25, "Mean9");
 new_bw9->SetParName(26, "Width9");
 
+new_bw10->SetParName(27, "Amp10");
+new_bw10->SetParName(28, "Mean10");
+new_bw10->SetParName(29, "Width10");
+
+new_bw11->SetParName(30, "Amp11");
+new_bw11->SetParName(31, "Mean11");
+new_bw11->SetParName(32, "Width11");
+
+new_bw12->SetParName(33, "Amp12");
+new_bw12->SetParName(34, "Mean12");
+new_bw12->SetParName(35, "Width12");
+
 // Dibujar las nuevas funciones en el mismo Canvas
 new_bw1->SetLineColor(kBlack);
 new_bw2->SetLineColor(kBlack);
@@ -413,6 +466,9 @@ new_bw6->SetLineColor(kBlack);
 new_bw7->SetLineColor(kBlack);
 new_bw8->SetLineColor(kBlack);
 new_bw9->SetLineColor(kBlack);
+new_bw10->SetLineColor(kBlack);
+new_bw11->SetLineColor(kBlack);
+new_bw12->SetLineColor(kBlack);
 
 
 new_bw1->Draw("SAME");
@@ -424,6 +480,9 @@ new_bw6->Draw("SAME");
 new_bw7->Draw("SAME");
 new_bw8->Draw("SAME");
 new_bw9->Draw("SAME");
+new_bw10->Draw("SAME");
+new_bw11->Draw("SAME");
+new_bw12->Draw("SAME");
 
 // Mostrar el Canvas
 gPad->Update();
@@ -434,4 +493,3 @@ gPad->Update();
 
 
 }
-
