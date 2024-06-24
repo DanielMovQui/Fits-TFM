@@ -228,18 +228,18 @@ gROOT->SetBatch(kFALSE);
 
 */
 
-TF1 *bw1 = new TF1("m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 8.5, 9.5);
-TF1 *bw2 = new TF1("m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 8.5, 11);
-TF1 *bw3 = new TF1("m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 9, 12);
-TF1 *bw4 = new TF1("m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 9, 13);
-TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 9, 13);
-TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
-TF1 *bw7 = new TF1("m7", "[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
-TF1 *bw8 = new TF1("m8", "[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
-TF1 *bw9 = new TF1("m9", "[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 14);
-TF1 *bw10 = new TF1("m10", "[27]/ ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
-TF1 *bw11 = new TF1("m11", "[30]/ ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
-TF1 *bw12 = new TF1("m12", "[33]/ ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
+TF1 *bw1 = new TF1("bw1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 8.5, 9.5);
+TF1 *bw2 = new TF1("bw2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 8.5, 11);
+TF1 *bw3 = new TF1("bw3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 9, 12);
+TF1 *bw4 = new TF1("bw4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 9, 13);
+TF1 *bw5 = new TF1("bw5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 9, 13);
+TF1 *bw6 = new TF1("bw6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
+TF1 *bw7 = new TF1("bw7", "[18]/ ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
+TF1 *bw8 = new TF1("bw8", "[21]/ ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
+TF1 *bw9 = new TF1("bw9", "[24]/ ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 14);
+TF1 *bw10 = new TF1("bw10", "[27]/ ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
+TF1 *bw11 = new TF1("bw11", "[30]/ ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
+TF1 *bw12 = new TF1("bw12", "[33]/ ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
 
 // Definir parámetros iniciales para cada Breit-Wigner
 bw1->SetParameters(300, 9.18, 0.004);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
@@ -369,18 +369,18 @@ Double_t par_total[36];
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Breit-Wigner con los parámetros ajustados
-TF1 *new_bw1 = new TF1("new_m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 8.5, 12);
-TF1 *new_bw2 = new TF1("new_m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 8.5, 12);
-TF1 *new_bw3 = new TF1("new_m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 9, 13.0);
-TF1 *new_bw4 = new TF1("new_m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 9, 13);
-TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 9, 13);
-TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
-TF1 *new_bw7 = new TF1("new_m7", "[18] / ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
-TF1 *new_bw8 = new TF1("new_m8", "[21] / ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
-TF1 *new_bw9 = new TF1("new_m9", "[24] / ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
-TF1 *new_bw10 = new TF1("new_m10", "[27] / ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
-TF1 *new_bw11 = new TF1("new_m11", "[30] / ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
-TF1 *new_bw12 = new TF1("new_m11", "[33] / ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
+TF1 *new_bw1 = new TF1("new_bw1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 8.5, 12);
+TF1 *new_bw2 = new TF1("new_bw2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 8.5, 12);
+TF1 *new_bw3 = new TF1("new_bw3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 9, 13.0);
+TF1 *new_bw4 = new TF1("new_bw4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 9, 13);
+TF1 *new_bw5 = new TF1("new_bw5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 9, 13);
+TF1 *new_bw6 = new TF1("new_bw6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 9, 13);
+TF1 *new_bw7 = new TF1("new_bw7", "[18] / ((x * x - [19] * [19]) * (x * x - [19] * [19]) + [19] * [19] * [20] * [20])", 9, 13);
+TF1 *new_bw8 = new TF1("new_bw8", "[21] / ((x * x - [22] * [22]) * (x * x - [22] * [22]) + [22] * [22] * [23] * [23])", 9, 13);
+TF1 *new_bw9 = new TF1("new_bw9", "[24] / ((x * x - [25] * [25]) * (x * x - [25] * [25]) + [25] * [25] * [26] * [26])", 9, 13);
+TF1 *new_bw10 = new TF1("new_bw10", "[27] / ((x * x - [28] * [28]) * (x * x - [28] * [28]) + [28] * [28] * [29] * [29])", 10, 14.5);
+TF1 *new_bw11 = new TF1("new_bw11", "[30] / ((x * x - [31] * [31]) * (x * x - [31] * [31]) + [31] * [31] * [32] * [32])", 10, 14.5);
+TF1 *new_bw12 = new TF1("new_bw12", "[33] / ((x * x - [34] * [34]) * (x * x - [34] * [34]) + [34] * [34] * [35] * [35])", 10, 14.5);
 
 new_bw1->SetNpx(5000);
 new_bw2->SetNpx(5000);
@@ -487,9 +487,42 @@ new_bw12->Draw("SAME");
 // Mostrar el Canvas
 gPad->Update();
 
+// Configurar la leyenda
+TLegend *legend = new TLegend(0.6, 0.6, 0.9, 0.9); // Coordenadas (x1, y1, x2, y2) donde x1,y1 son esquina inferior izquierda y x2,y2 son esquina superior derecha en fracción del canvas
+legend->AddEntry(exTotalH, "Experimental Data"); // Agregar entrada para los datos experimentales
+legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
+legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
+legend->SetBorderSize(0); // Sin borde
+legend->Draw(); // Dibujar la leyenda
 
+// Calcular la integral de cada función Breit-Wigner ajustada
+Double_t integral_bw1 = new_bw1->Integral(8.5, 12);
+Double_t integral_bw2 = new_bw2->Integral(8.5, 12);
+Double_t integral_bw3 = new_bw3->Integral(9, 14.0);
+Double_t integral_bw4 = new_bw4->Integral(9, 14);
+Double_t integral_bw5 = new_bw5->Integral(9, 14);
+Double_t integral_bw6 = new_bw6->Integral(9, 14);
+Double_t integral_bw7 = new_bw7->Integral(9, 14);
+Double_t integral_bw8 = new_bw8->Integral(9, 14);
+Double_t integral_bw9 = new_bw9->Integral(9, 14);
+Double_t integral_bw10 = new_bw10->Integral(10, 14.5);
+Double_t integral_bw11 = new_bw11->Integral(10, 14.5);
+Double_t integral_bw12 = new_bw12->Integral(10, 14.5);
 
-
+// Imprimir los resultados
+cout << "Integral of new_bw1: " << integral_bw1 << endl;
+cout << "Integral of new_bw2: " << integral_bw2 << endl;
+cout << "Integral of new_bw3: " << integral_bw3 << endl;
+cout << "Integral of new_bw4: " << integral_bw4 << endl;
+cout << "Integral of new_bw5: " << integral_bw5 << endl;
+cout << "Integral of new_bw6: " << integral_bw6 << endl;
+cout << "Integral of new_bw7: " << integral_bw7 << endl;
+cout << "Integral of new_bw8: " << integral_bw8 << endl;
+cout << "Integral of new_bw9: " << integral_bw9 << endl;
+cout << "Integral of new_bw10: " << integral_bw10 << endl;
+cout << "Integral of new_bw11: " << integral_bw11 << endl;
+cout << "Integral of new_bw12: " << integral_bw12 << endl;
 
 
 }
+

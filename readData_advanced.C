@@ -1,3 +1,5 @@
+
+
 Float_t Ex = 0;
 Int_t detID = 0;
 Float_t coinTime = 0;
@@ -6,8 +8,7 @@ Float_t rdt[8];
 Float_t x = 0;
 Float_t thetaCM = 0;
 
-
-void readData_BW_neutron()
+void readData_advanced()
 {
 TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
 TTree *tree = (TTree*)f->Get("tree");
@@ -172,6 +173,12 @@ auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
    cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
 
 
+
+
+
+
+
+
 //Histograms
 TH1F* coinTimeH = new TH1F("coinTimeH","coinTimeH",1000,-1000,1000);
 
@@ -200,9 +207,9 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
          //if(!std::isnan(e[2])) std::cout<<" Energy index 0 "<<e[2]<<"\n"; 
     }   
 
-     if(coinTime<-10 || coinTime>20) continue; 
+     //if(coinTime<-10 || coinTime>20) continue; 
 
-      coinTimeH->Fill(coinTime);
+     coinTimeH->Fill(coinTime);
 
       if (x < -0.95 || x > 0.95 || thetaCM < 10 || e[detID] < 1)
         continue;
@@ -273,80 +280,82 @@ for (int i = 0; i < sizeof(selectedIndices) / sizeof(selectedIndices[0]); ++i) {
   c3->cd(4);
   cutProtonRecoil4->Draw("same");
   cutBoronRecoil4->Draw("same"); 
-
+*/
   TCanvas *c4 = new TCanvas();
   coinTimeH->Draw();
 
 
   TCanvas *c5 = new TCanvas();
   exTotalH->Draw();
-*/
 
-TF1 *bw1 = new TF1("m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.2, 12.0);
-TF1 *bw2 = new TF1("m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 11.5, 12.5);
-TF1 *bw3 = new TF1("m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 12.0, 13.0);
-TF1 *bw4 = new TF1("m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 12.5, 14);
-TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 12.8, 14.4);
-TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 13.7, 14.5);
 
-// Definir parámetros iniciales para cada Breit-Wigner
-bw1->SetParameters(300, 11.6, 0.180);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
-bw2->SetParameters(1000, 11.9, 0.194);
-bw3->SetParameters(2500, 12.5, 0.20);
-bw4->SetParameters(2500, 13.3, 0.30);
-bw5->SetParameters(2500, 13.6, 0.3);
-bw6->SetParameters(1000, 14, 0.5);
+TF1 *g1 = new TF1("m1", "gaus", 11.2, 12.0);
+TF1 *g2 = new TF1("m2", "gaus", 11.5, 12.5);
+TF1 *g3 = new TF1("m3", "gaus", 12.0, 13.0);
+TF1 *g4 = new TF1("m4", "gaus", 12.5, 14);
+TF1 *g5 = new TF1("m5", "gaus", 12.8, 14.4);
+TF1 *g6 = new TF1("m6", "gaus", 13.7, 14.5);
 
-// Definir total dada por la suma de los 8 picos
-TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
+// Definir parámetros iniciales para cada gaussiana
+g1->SetParameters(100, 11.7, 0.180);  // Parámetros iniciales: amplitud, media, desviación estándar
+g2->SetParameters(80, 12, 0.194);
+g3->SetParameters(50, 12.5, 0.30);
+g4->SetParameters(100, 13.3, 0.30);
+g5->SetParameters(100, 13.6, 0.3);
+g6->SetParameters(60, 13.5, 14.5);
 
-// Ajustar cada función a los datos teniendo en cuenta la anterior
-exTotalH->Fit(bw1, "R");
-exTotalH->Fit(bw2, "R+");
-exTotalH->Fit(bw3, "R+");
-exTotalH->Fit(bw4, "R+");
-exTotalH->Fit(bw5, "R+");
-exTotalH->Fit(bw6, "R+");
+// The total is the sum of the five, each has 3 parameters
+TF1 *total = new TF1("mstotal", "gaus(0)+gaus(3)+gaus(6)+gaus(9)+gaus(12)+gaus(15)", 11, 14.5);
 
-// Obtener los parámetros del fit
+// Fit each function and add it to the list of functions
+exTotalH->Fit(g1, "R");
+exTotalH->Fit(g2, "R+");
+exTotalH->Fit(g3, "R+");
+exTotalH->Fit(g4, "R+");
+exTotalH->Fit(g5, "R+");
+exTotalH->Fit(g6, "R+");
+
+// Get the parameters from the fit
 Double_t par[18];
-bw1->GetParameters(&par[0]);
-bw2->GetParameters(&par[3]);
-bw3->GetParameters(&par[6]);
-bw4->GetParameters(&par[9]);
-bw5->GetParameters(&par[12]);
-bw6->GetParameters(&par[15]);
+g1->GetParameters(&par[0]);
+g2->GetParameters(&par[3]);
+g3->GetParameters(&par[6]);
+g4->GetParameters(&par[9]);
+g5->GetParameters(&par[12]);
+g6->GetParameters(&par[15]);
 
+// Use the parameters on the sum
 total->SetParameters(par);
 
 // Configurar nombres de parámetros uno por uno
-total->SetParName(0, "Amp1");
+total->SetParName(0, "A1");
 total->SetParName(1, "Mean1");
-total->SetParName(2, "Width1");
-total->SetParName(3, "Amp2");
+total->SetParName(2, "Sigma1");
+total->SetParName(3, "A2");
 total->SetParName(4, "Mean2");
-total->SetParName(5, "Width2");
-total->SetParName(6, "Amp3");
+total->SetParName(5, "Sigma2");
+total->SetParName(6, "A3");
 total->SetParName(7, "Mean3");
-total->SetParName(8, "Width3");
-total->SetParName(9, "Amp4");
+total->SetParName(8, "Sigma3");
+total->SetParName(9, "A4");
 total->SetParName(10, "Mean4");
-total->SetParName(11, "Width4");
-total->SetParName(12, "Amp5");
+total->SetParName(11, "Sigma4");
+total->SetParName(12, "A5");
 total->SetParName(13, "Mean5");
-total->SetParName(14, "Width5");
-total->SetParName(15, "Amp6");
+total->SetParName(14, "Sigma5");
+total->SetParName(15, "A6");
 total->SetParName(16, "Mean6");
-total->SetParName(17, "Width6");
+total->SetParName(17, "Sigma6");
 
-// Establecer límites de parámetros (si es necesario)
-total->SetParLimits(1, 11.50, 11.7);
-total->SetParLimits(2, 0.1, 0.4);
-total->SetParLimits(4, 11.80, 12);
-total->SetParLimits(5, 0.1, 0.4);
-total->SetParLimits(7, 12.4, 12.6);
-total->SetParLimits(8, 0.180, 1);
-total->SetParLimits(10, 13.25, 13.35);
+//total->SetParLimits(0, )
+total->SetParLimits(1, 11.65, 11.75); 
+total->SetParLimits(2, 0.120, 0.200);
+total->SetParLimits(4, 11.9, 11.95); 
+total->SetParLimits(5, 0.1, 0.240);
+total->SetParLimits(6, 55, 70);
+total->SetParLimits(7, 12.4, 12.6); 
+total->SetParLimits(8, 0.180, 0.4);
+total->SetParLimits(10, 13.25, 13.35); 
 total->SetParLimits(11, 0.1, 0.4);
 total->SetParLimits(13, 13.55, 13.65);
 total->SetParLimits(14, 0.1, 0.4);
@@ -355,14 +364,9 @@ total->SetParLimits(17, 0.1, 0.4);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
 exTotalH->Fit(total, "R+");
-
 // Configurar opciones de visualización para la línea de ajuste resultante
-total->SetLineColor(kRed);
-total->SetLineWidth(2);
-total->SetNpx(5000);
-exTotalH->SetTitle("Energy distribution ^{10}B"); 
-exTotalH->SetXTitle("E (MeV)");
-exTotalH->SetYTitle("Counts");
+total->SetLineColor(kRed);  // Puedes ajustar el color según tus preferencias
+total->SetLineWidth(2);     // Puedes ajustar el grosor de la línea según tus preferencias
 // Dibujar solo la línea de ajuste resultante
 exTotalH->Draw("HIST");
 total->Draw("SAME");
@@ -371,94 +375,71 @@ total->Draw("SAME");
 Double_t par_total[18];
 total->GetParameters(par_total);
 
-// Crear nuevas funciones Breit-Wigner con los parámetros ajustados
-TF1 *new_bw1 = new TF1("new_m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 10, 13);
-TF1 *new_bw2 = new TF1("new_m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 10, 13);
-TF1 *new_bw3 = new TF1("new_m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 11, 14);
-TF1 *new_bw4 = new TF1("new_m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 11, 15);
-TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 11, 15);
-TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
+// Crear nuevas funciones Gaussianas con los parámetros ajustados
+TF1 *new_g1 = new TF1("new_m1", "gaus", 11, 12.3);
+TF1 *new_g2 = new TF1("new_m2", "gaus", 11, 12.8);
+TF1 *new_g3 = new TF1("new_m3", "gaus", 11.4, 13.9);
+TF1 *new_g4 = new TF1("new_m4", "gaus", 12, 14.4);
+TF1 *new_g5 = new TF1("new_m5", "gaus", 12, 14.5);
+TF1 *new_g6 = new TF1("new_m6", "gaus", 12.5, 14.5);
 
-new_bw1->SetNpx(5000);
-new_bw2->SetNpx(5000);
-new_bw3->SetNpx(5000);
-new_bw4->SetNpx(5000);
-new_bw5->SetNpx(5000);
-new_bw6->SetNpx(5000);
-
-new_bw1->SetParameters(par_total);
-new_bw2->SetParameters(par_total);
-new_bw3->SetParameters(par_total);
-new_bw4->SetParameters(par_total);
-new_bw5->SetParameters(par_total);
-new_bw6->SetParameters(par_total);
+// Establecer los parámetros ajustados en las nuevas funciones
+new_g1->SetParameters(par_total);
+new_g2->SetParameters(par_total + 3);
+new_g3->SetParameters(par_total + 6);
+new_g4->SetParameters(par_total + 9);
+new_g5->SetParameters(par_total + 12);
+new_g6->SetParameters(par_total + 15);
 
 // Configurar nombres de parámetros
-new_bw1->SetParName(0, "Amp1");
-new_bw1->SetParName(1, "Mean1");
-new_bw1->SetParName(2, "Width1");
+new_g1->SetParName(0, "A1");
+new_g1->SetParName(1, "Mean1");
+new_g1->SetParName(2, "Sigma1");
 
-new_bw2->SetParName(3, "Amp2");
-new_bw2->SetParName(4, "Mean2");
-new_bw2->SetParName(5, "Width2");
+new_g2->SetParName(0, "A2");
+new_g2->SetParName(1, "Mean2");
+new_g2->SetParName(2, "Sigma2");
 
-new_bw3->SetParName(6, "Amp3");
-new_bw3->SetParName(7, "Mean3");
-new_bw3->SetParName(8, "Width3");
+new_g3->SetParName(0, "A3");
+new_g3->SetParName(1, "Mean3");
+new_g3->SetParName(2, "Sigma3");
 
-new_bw4->SetParName(9, "Amp4");
-new_bw4->SetParName(10, "Mean4");
-new_bw4->SetParName(11, "Width4");
+new_g4->SetParName(0, "A4");
+new_g4->SetParName(1, "Mean4");
+new_g4->SetParName(2, "Sigma4");
 
-new_bw5->SetParName(12, "Amp5");
-new_bw5->SetParName(13, "Mean5");
-new_bw5->SetParName(14, "Width5");
+new_g5->SetParName(0, "A5");
+new_g5->SetParName(1, "Mean5");
+new_g5->SetParName(2, "Sigma5");
 
-new_bw6->SetParName(15, "Amp6");
-new_bw6->SetParName(16, "Mean6");
-new_bw6->SetParName(17, "Width6");
+new_g6->SetParName(0, "A6");
+new_g6->SetParName(1, "Mean6");
+new_g6->SetParName(2, "Sigma6");
 
 // Dibujar las nuevas funciones en el mismo Canvas
-new_bw1->SetLineColor(kBlack);
-new_bw2->SetLineColor(kBlack);
-new_bw3->SetLineColor(kBlack);
-new_bw4->SetLineColor(kBlack);
-new_bw5->SetLineColor(kBlack);
-new_bw6->SetLineColor(kBlack);
+new_g1->SetLineColor(kBlack);
+new_g2->SetLineColor(kBlack);
+new_g3->SetLineColor(kBlack);
+new_g4->SetLineColor(kBlack);
+new_g5->SetLineColor(kBlack);
+new_g6->SetLineColor(kBlack);
 
-new_bw1->Draw("SAME");
-new_bw2->Draw("SAME");
-new_bw3->Draw("SAME");
-new_bw4->Draw("SAME");
-new_bw5->Draw("SAME");
-new_bw6->Draw("SAME");
 
-// Configurar la leyenda
-TLegend *legend = new TLegend(0.6, 0.6, 0.9, 0.9); // Coordenadas (x1, y1, x2, y2) donde x1,y1 son esquina inferior izquierda y x2,y2 son esquina superior derecha en fracción del canvas
-legend->AddEntry(exTotalH, "Experimental Data"); // Agregar entrada para los datos experimentales
-legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
-legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
-legend->SetBorderSize(0); // Sin borde
-legend->Draw(); // Dibujar la leyenda
+new_g1->Draw("SAME");
+new_g2->Draw("SAME");
+new_g3->Draw("SAME");
+new_g4->Draw("SAME");
+new_g5->Draw("SAME");
+new_g6->Draw("SAME");
 
 // Mostrar el Canvas
 gPad->Update();
 
-// Calcular las integrales de cada función sobre su dominio
-double integral1 = new_bw1->Integral(10, 15);
-double integral2 = new_bw2->Integral(10, 15);
-double integral3 = new_bw3->Integral(10, 15);
-double integral4 = new_bw4->Integral(10, 15);
-double integral5 = new_bw5->Integral(10, 15);
-double integral6 = new_bw6->Integral(10, 15);
 
-// Imprimir los resultados
-std::cout << "Integral de new_bw1 en [10, 13]: " << integral1 << std::endl;
-std::cout << "Integral de new_bw2 en [10, 13]: " << integral2 << std::endl;
-std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << std::endl;
-std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << std::endl;
-std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << std::endl;
-std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << std::endl;
 
 }
+
+
+
+
 

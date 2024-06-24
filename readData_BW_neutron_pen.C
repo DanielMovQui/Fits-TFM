@@ -1,3 +1,8 @@
+#include <TMath.h>
+#include <cmath>
+#include <iostream>
+
+
 Float_t Ex = 0;
 Int_t detID = 0;
 Float_t coinTime = 0;
@@ -7,29 +12,138 @@ Float_t x = 0;
 Float_t thetaCM = 0;
 
 
-void readData_BW_neutron()
+// Constantes de masa y conversiones
+const double u_to_kg = 1.66053906660e-27; // Unidad de masa atómica a kg
+const double MeV_to_J = 1.60218e-13; // Conversión de eV a J
+const double hbar = 1.0545718e-34; // Planck constante reducida en J·s
+const double mass_B10_u = 10.012937; // Masa de boro-10 en unidades de masa atómica
+const double mass_neutron_u = 1.008665; // Masa de neutrón en unidades de masa atómica
+const double r = 85 * 1.0e-12;
+// Función para calcular la masa reducida
+double calcularMasaReducida() {
+    double mass_B10_kg = mass_B10_u * u_to_kg;
+    double mass_neutron_kg = mass_neutron_u * u_to_kg;
+    double masa_reducida = (mass_B10_kg * mass_neutron_kg) / (mass_B10_kg + mass_neutron_kg);
+    std::cout << "Masa reducida calculada: " << masa_reducida << std::endl;
+    return masa_reducida;
+}
+
+// Función para calcular el número de onda k dado E
+double k(double E) {
+    double E_J = E * MeV_to_J;
+    double mu = calcularMasaReducida();
+    if (mu <= 0) {
+        std::cerr << "Error: Masa reducida no válida." << std::endl;
+        return NAN; // Retornar NaN si mu no es válido
+    }
+    double k_value = sqrt(2 * mu * E_J) / hbar;
+    std::cout << "k(E) calculado: " << k_value << std::endl;
+    return k_value;
+}
+
+// Función para calcular el número de onda k0 dado E0
+double k0(double E0) {
+    double E0_J = E0 * MeV_to_J;
+    double mu = calcularMasaReducida();
+    double k0_value = sqrt(2 * mu * E0_J) / hbar;
+    std::cout << "k0(E0) calculado: " << k0_value << std::endl;
+    return k0_value;
+}
+
+// Función para calcular la función de Bessel J_l(p)
+double besselJ(int l, double p) {
+    double x = p / 2.0;
+    if (x <= 0) {
+        std::cerr << "Error: Argumento de besselJ no válido." << std::endl;
+        return NAN; // Retornar NaN si x no es válido
+    }
+    int max_iter = 10; // Reducido el número máximo de iteraciones para demostración
+    double sum = 0.0;
+    double term = 1.0;
+    double factorial = 1.0;
+
+    for (int k = 0; k <= max_iter; ++k) {
+        if (k > 0) {
+            term *= (-x * x) / (4.0 * k * (l + k));
+            factorial *= k;
+        }
+        sum += term / (factorial * factorial);
+    }
+
+    double result = sum * std::pow(x, l);
+    std::cout << "besselJ(" << l << ", " << p << ") calculado: " << result << std::endl;
+    return result;
+}
+
+// Función para calcular la función de Bessel Y_l(p)
+double besselY(int l, double p) {
+    double x = p / 2.0;
+    if (x <= 0) {
+        std::cerr << "Error: Argumento de besselY no válido." << std::endl;
+        return NAN; // Retornar NaN si x no es válido
+    }
+    int max_iter = 10; // Reducido el número máximo de iteraciones para demostración
+    double sum = 0.0;
+    double term = 1.0; // Inicialización corregida a 1.0 para el primer término
+    double factorial = 1.0;
+    double jl = besselJ(l, p); // Calculamos J_l(p) una vez
+
+    for (int k = 0; k <= max_iter; ++k) {
+        if (k > 0) {
+            term *= (-x * x) / (4.0 * k * (l + k));
+            factorial *= k;
+        }
+        sum += term / (factorial * factorial);
+    }
+
+    double result = sum * (2.0 / M_PI * (jl * std::log(x) - 1.0 / M_PI));
+    std::cout << "besselY(" << l << ", " << p << ") calculado: " << result << std::endl;
+    return result;
+}
+
+// Función para calcular la penetrabilidad s_l
+double calcularPenetrabilidad(int l, double k_value, double r) {
+    double p = k_value * r;
+    double J = besselJ(l, p);
+    double Y = besselY(l, p);
+    double penetrabilidad = J * J + Y * Y;
+    std::cout << "Penetrabilidad calculada: " << penetrabilidad << std::endl;
+    return penetrabilidad;
+}
+
+// Función para calcular la anchura Γ(E)
+double calcularAnchura(double E, double E0, int l, double r, double gamma_0) {
+    double k_value = k(E);
+    double k0_value = k0(E0);
+    double P_l = k0_value * calcularPenetrabilidad(l+0.5, k_value, r);
+    double P_l0 = k_value * calcularPenetrabilidad(l+0.5, k0_value, r);
+    return gamma_0 * (P_l0 / P_l);
+}
+
+
+void readData_BW_neutron_pen()
 {
-TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
-TTree *tree = (TTree*)f->Get("tree");
+    TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
+    TTree *tree = (TTree*)f->Get("tree");
 
-tree->SetBranchAddress("Ex",&Ex);
-tree->SetBranchAddress("e", e);
-tree->SetBranchAddress("rdt", rdt);
-tree->SetBranchAddress("detID", &detID);
-tree->SetBranchAddress("coinTime", &coinTime);
-tree->SetBranchAddress("x", &x);
-tree->SetBranchAddress("thetaCM", &thetaCM);
+    tree->SetBranchAddress("Ex", &Ex);
+    tree->SetBranchAddress("e", e);
+    tree->SetBranchAddress("rdt", rdt);
+    tree->SetBranchAddress("detID", &detID);
+    tree->SetBranchAddress("coinTime", &coinTime);
+    tree->SetBranchAddress("x", &x);
+    tree->SetBranchAddress("thetaCM", &thetaCM);
 
-tree->SetBranchStatus("*", 0);
-tree->SetBranchStatus("Ex", 1);
-tree->SetBranchStatus("x", 1);
-tree->SetBranchStatus("rdt", 1);
-tree->SetBranchStatus("thetaCM", 1);
-tree->SetBranchStatus("coinTime", 1);
-tree->SetBranchStatus("detID", 1);
-tree->SetBranchStatus("e", 1);
+    tree->SetBranchStatus("*", 0);
+    tree->SetBranchStatus("Ex", 1);
+    tree->SetBranchStatus("x", 1);
+    tree->SetBranchStatus("rdt", 1);
+    tree->SetBranchStatus("thetaCM", 1);
+    tree->SetBranchStatus("coinTime", 1);
+    tree->SetBranchStatus("detID", 1);
+    tree->SetBranchStatus("e", 1);
 
-//Cuts
+    // Definición de cortes de protones
 auto cutProtonRecoil1 = new TCutG("CUTPROTONRECOIL1",6);
     cutProtonRecoil1->SetVarX("rdtH[0]");
     cutProtonRecoil1->SetVarY("");
@@ -171,7 +285,6 @@ auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
    cutBoronRecoil4->SetPoint(15,184.9899,5025.766);
    cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
 
-
 //Histograms
 TH1F* coinTimeH = new TH1F("coinTimeH","coinTimeH",1000,-1000,1000);
 
@@ -227,75 +340,21 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
 
 gROOT->SetBatch(kFALSE);
 
-/*
-TCanvas *c1 = new TCanvas();
-c1->Divide(2, 4);
-int selectedIndices[] = {3, 4, 8, 9, 10, 14, 15, 21};
-
-for (int i = 0; i < sizeof(selectedIndices) / sizeof(selectedIndices[0]); ++i) {
-    int index = selectedIndices[i];
-    c1->cd(i + 1);
-    exH[index]->Draw();
-}
-*/
-/*
-  TCanvas *c1 = new TCanvas();
-  c1->Divide(6,4);
-    for(auto i=0;i<24;++i){
-      c1->cd(i+1);
-      exH[i]->Draw();
-    }
-  
-
-  TCanvas *c2 = new TCanvas();
-  c2->Divide(6,4);
-    for(auto i=0;i<24;++i){
-      c2->cd(i+1);
-      eH[i]->Draw();
-    }
-
-  TCanvas *c3 = new TCanvas();
-  c3->Divide(2,2);
-    for(auto i=0;i<4;++i){
-      c3->cd(i+1);
-      rdtH[i]->Draw("colz");
-    } 
-
-  c3->cd(1);
-  cutProtonRecoil1->Draw("same"); 
-  cutBoronRecoil1->Draw("same"); 
-  c3->cd(2);
-  cutProtonRecoil2->Draw("same"); 
-  cutBoronRecoil2->Draw("same"); 
-  c3->cd(3);
-  cutProtonRecoil3->Draw("same");
-  cutBoronRecoil3->Draw("same"); 
-  c3->cd(4);
-  cutProtonRecoil4->Draw("same");
-  cutBoronRecoil4->Draw("same"); 
-
-  TCanvas *c4 = new TCanvas();
-  coinTimeH->Draw();
-
-
-  TCanvas *c5 = new TCanvas();
-  exTotalH->Draw();
-*/
-
-TF1 *bw1 = new TF1("m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.2, 12.0);
-TF1 *bw2 = new TF1("m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 11.5, 12.5);
-TF1 *bw3 = new TF1("m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 12.0, 13.0);
-TF1 *bw4 = new TF1("m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 12.5, 14);
-TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 12.8, 14.4);
-TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 13.7, 14.5);
+// Definir las funciones Breit-Wigner con anchura dependiente del momento angular
+TF1 *bw1 = new TF1("bw1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.2, 12.0);
+TF1 *bw2 = new TF1("bw2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 11.5, 12.5);
+TF1 *bw3 = new TF1("bw3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 12.0, 13.0);
+TF1 *bw4 = new TF1("bw4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 12.5, 14);
+TF1 *bw5 = new TF1("bw5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 12.8, 14.4);
+TF1 *bw6 = new TF1("bw6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 13.7, 14.5);
 
 // Definir parámetros iniciales para cada Breit-Wigner
-bw1->SetParameters(300, 11.6, 0.180);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
-bw2->SetParameters(1000, 11.9, 0.194);
-bw3->SetParameters(2500, 12.5, 0.20);
-bw4->SetParameters(2500, 13.3, 0.30);
-bw5->SetParameters(2500, 13.6, 0.3);
-bw6->SetParameters(1000, 14, 0.5);
+bw1->SetParameters(500, 11.6, 0.180);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
+bw2->SetParameters(1500, 11.9, 0.294);
+bw3->SetParameters(2800, 12.5, 0.50);
+bw4->SetParameters(2700, 13.3, 0.40);
+bw5->SetParameters(2000, 13.6, 0.3);
+bw6->SetParameters(1000, 14, 0.3);
 
 // Definir total dada por la suma de los 8 picos
 TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
@@ -310,12 +369,38 @@ exTotalH->Fit(bw6, "R+");
 
 // Obtener los parámetros del fit
 Double_t par[18];
+
 bw1->GetParameters(&par[0]);
 bw2->GetParameters(&par[3]);
 bw3->GetParameters(&par[6]);
 bw4->GetParameters(&par[9]);
 bw5->GetParameters(&par[12]);
 bw6->GetParameters(&par[15]);
+
+// Actualizar las anchuras para las funciones Breit-Wigner según el momento angular l
+    par[2] = calcularAnchura((11.2 + 12.0) / 2.0, par[1], 1, r, par[2]);   // l1 es el momento angular para bw1
+    par[5] = calcularAnchura((11.5 + 12.5) / 2.0, par[4], 2, r, par[5]);   // l2 es el momento angular para bw2
+    par[8] = calcularAnchura((12.0 + 13.0) / 2.0, par[7], 1, r, par[8]);   // l3 es el momento angular para bw3
+    par[11] = calcularAnchura((12.5 + 14.0) / 2.0, par[10], 0, r, par[11]); // l4 es el momento angular para bw4
+    par[14] = calcularAnchura((12.8 + 14.4) / 2.0, par[13], 0, r, par[14]); // l5 es el momento angular para bw5
+    par[17] = calcularAnchura((13.7 + 14.5) / 2.0, par[16], 5, r, par[17]); // l6 es el momento angular para bw6
+
+// Imprimir los parámetros actualizados (opcional)
+    std::cout << "Anchuras actualizadas para Breit-Wigner:" << std::endl;
+    std::cout << "bw1: " << par[2] << std::endl;
+    std::cout << "bw2: " << par[5] << std::endl;
+    std::cout << "bw3: " << par[8] << std::endl;
+    std::cout << "bw4: " << par[11] << std::endl;
+    std::cout << "bw5: " << par[14] << std::endl;
+    std::cout << "bw6: " << par[17] << std::endl;
+
+
+bw1->SetParameters(&par[0]);
+bw2->SetParameters(&par[3]);
+bw3->SetParameters(&par[6]);
+bw4->SetParameters(&par[9]);
+bw5->SetParameters(&par[12]);
+bw6->SetParameters(&par[15]);
 
 total->SetParameters(par);
 
@@ -342,7 +427,7 @@ total->SetParName(17, "Width6");
 // Establecer límites de parámetros (si es necesario)
 total->SetParLimits(1, 11.50, 11.7);
 total->SetParLimits(2, 0.1, 0.4);
-total->SetParLimits(4, 11.80, 12);
+total->SetParLimits(4, 11.85, 12.05);
 total->SetParLimits(5, 0.1, 0.4);
 total->SetParLimits(7, 12.4, 12.6);
 total->SetParLimits(8, 0.180, 1);
@@ -369,15 +454,16 @@ total->Draw("SAME");
 
 // Obtener los parámetros ajustados de la función total
 Double_t par_total[18];
+
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Breit-Wigner con los parámetros ajustados
-TF1 *new_bw1 = new TF1("new_m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 10, 13);
-TF1 *new_bw2 = new TF1("new_m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 10, 13);
-TF1 *new_bw3 = new TF1("new_m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 11, 14);
-TF1 *new_bw4 = new TF1("new_m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 11, 15);
-TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 11, 15);
-TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
+TF1 *new_bw1 = new TF1("new_bw1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 10, 13);
+TF1 *new_bw2 = new TF1("new_bw2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 10, 13);
+TF1 *new_bw3 = new TF1("new_bw3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 11, 14);
+TF1 *new_bw4 = new TF1("new_bw4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 11, 15);
+TF1 *new_bw5 = new TF1("new_bw5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 11, 15);
+TF1 *new_bw6 = new TF1("new_bw6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
 
 new_bw1->SetNpx(5000);
 new_bw2->SetNpx(5000);
@@ -392,31 +478,6 @@ new_bw3->SetParameters(par_total);
 new_bw4->SetParameters(par_total);
 new_bw5->SetParameters(par_total);
 new_bw6->SetParameters(par_total);
-
-// Configurar nombres de parámetros
-new_bw1->SetParName(0, "Amp1");
-new_bw1->SetParName(1, "Mean1");
-new_bw1->SetParName(2, "Width1");
-
-new_bw2->SetParName(3, "Amp2");
-new_bw2->SetParName(4, "Mean2");
-new_bw2->SetParName(5, "Width2");
-
-new_bw3->SetParName(6, "Amp3");
-new_bw3->SetParName(7, "Mean3");
-new_bw3->SetParName(8, "Width3");
-
-new_bw4->SetParName(9, "Amp4");
-new_bw4->SetParName(10, "Mean4");
-new_bw4->SetParName(11, "Width4");
-
-new_bw5->SetParName(12, "Amp5");
-new_bw5->SetParName(13, "Mean5");
-new_bw5->SetParName(14, "Width5");
-
-new_bw6->SetParName(15, "Amp6");
-new_bw6->SetParName(16, "Mean6");
-new_bw6->SetParName(17, "Width6");
 
 // Dibujar las nuevas funciones en el mismo Canvas
 new_bw1->SetLineColor(kBlack);
@@ -433,32 +494,8 @@ new_bw4->Draw("SAME");
 new_bw5->Draw("SAME");
 new_bw6->Draw("SAME");
 
-// Configurar la leyenda
-TLegend *legend = new TLegend(0.6, 0.6, 0.9, 0.9); // Coordenadas (x1, y1, x2, y2) donde x1,y1 son esquina inferior izquierda y x2,y2 son esquina superior derecha en fracción del canvas
-legend->AddEntry(exTotalH, "Experimental Data"); // Agregar entrada para los datos experimentales
-legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
-legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
-legend->SetBorderSize(0); // Sin borde
-legend->Draw(); // Dibujar la leyenda
-
 // Mostrar el Canvas
 gPad->Update();
 
-// Calcular las integrales de cada función sobre su dominio
-double integral1 = new_bw1->Integral(10, 15);
-double integral2 = new_bw2->Integral(10, 15);
-double integral3 = new_bw3->Integral(10, 15);
-double integral4 = new_bw4->Integral(10, 15);
-double integral5 = new_bw5->Integral(10, 15);
-double integral6 = new_bw6->Integral(10, 15);
-
-// Imprimir los resultados
-std::cout << "Integral de new_bw1 en [10, 13]: " << integral1 << std::endl;
-std::cout << "Integral de new_bw2 en [10, 13]: " << integral2 << std::endl;
-std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << std::endl;
-std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << std::endl;
-std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << std::endl;
-std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << std::endl;
 
 }
-

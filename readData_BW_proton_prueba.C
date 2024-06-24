@@ -1,3 +1,12 @@
+Double_t mybw(Double_t* x, Double_t* par)
+{
+  Double_t arg1 = 14.0/22.0; // 2 over pi
+  Double_t arg2 = par[1]*par[1]*par[2]*par[2]; // Gamma=par[1], M=par[2]
+  Double_t arg3 = ((x[0]*x[0]) - (par[2]*par[2]))*((x[0]*x[0]) - (par[2]*par[2]));
+  Double_t arg4 = x[0]*x[0]*x[0]*x[0]*((par[1]*par[1])/(par[2]*par[2]));
+  return par[0]*arg1*arg2/(arg3 + arg4);
+}
+
 Float_t Ex = 0;
 Int_t detID = 0;
 Float_t coinTime = 0;
@@ -6,8 +15,7 @@ Float_t rdt[8];
 Float_t x = 0;
 Float_t thetaCM = 0;
 
-
-void readData_BW_neutron()
+void readData_BW_proton_prueba()
 {
 TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
 TTree *tree = (TTree*)f->Get("tree");
@@ -172,6 +180,12 @@ auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
    cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
 
 
+
+
+
+
+
+
 //Histograms
 TH1F* coinTimeH = new TH1F("coinTimeH","coinTimeH",1000,-1000,1000);
 
@@ -290,17 +304,17 @@ TF1 *bw5 = new TF1("m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) 
 TF1 *bw6 = new TF1("m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 13.7, 14.5);
 
 // Definir parámetros iniciales para cada Breit-Wigner
-bw1->SetParameters(300, 11.6, 0.180);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
-bw2->SetParameters(1000, 11.9, 0.194);
-bw3->SetParameters(2500, 12.5, 0.20);
-bw4->SetParameters(2500, 13.3, 0.30);
-bw5->SetParameters(2500, 13.6, 0.3);
-bw6->SetParameters(1000, 14, 0.5);
+bw1->SetParameters(100, 11.6, 0.180);  // Parámetros iniciales: amplitud, media, anchura (ancho a media altura)
+bw2->SetParameters(80, 11.9, 0.194);
+bw3->SetParameters(50, 12, 1);
+bw4->SetParameters(100, 12.5, 0.2);
+bw5->SetParameters(100, 12.9, 0.23);
+bw6->SetParameters(60, 13.1, 0.4);
 
-// Definir total dada por la suma de los 8 picos
-TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
+// The total is the sum of the six, each has 3 parameters
+TF1 *total = new TF1("mstotal", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2]) + [3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5]) + [6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8]) + [9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11]) + [12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14]) + [15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 14.5);
 
-// Ajustar cada función a los datos teniendo en cuenta la anterior
+// Fit each function and add it to the list of functions
 exTotalH->Fit(bw1, "R");
 exTotalH->Fit(bw2, "R+");
 exTotalH->Fit(bw3, "R+");
@@ -308,7 +322,7 @@ exTotalH->Fit(bw4, "R+");
 exTotalH->Fit(bw5, "R+");
 exTotalH->Fit(bw6, "R+");
 
-// Obtener los parámetros del fit
+// Get the parameters from the fit
 Double_t par[18];
 bw1->GetParameters(&par[0]);
 bw2->GetParameters(&par[3]);
@@ -317,6 +331,7 @@ bw4->GetParameters(&par[9]);
 bw5->GetParameters(&par[12]);
 bw6->GetParameters(&par[15]);
 
+// Use the parameters on the sum
 total->SetParameters(par);
 
 // Configurar nombres de parámetros uno por uno
@@ -340,18 +355,18 @@ total->SetParName(16, "Mean6");
 total->SetParName(17, "Width6");
 
 // Establecer límites de parámetros (si es necesario)
-total->SetParLimits(1, 11.50, 11.7);
-total->SetParLimits(2, 0.1, 0.4);
-total->SetParLimits(4, 11.80, 12);
-total->SetParLimits(5, 0.1, 0.4);
-total->SetParLimits(7, 12.4, 12.6);
-total->SetParLimits(8, 0.180, 1);
-total->SetParLimits(10, 13.25, 13.35);
-total->SetParLimits(11, 0.1, 0.4);
-total->SetParLimits(13, 13.55, 13.65);
-total->SetParLimits(14, 0.1, 0.4);
-total->SetParLimits(16, 14.05, 14.15);
-total->SetParLimits(17, 0.1, 0.4);
+total->SetParLimits(1, 11.55, 11.70);
+total->SetParLimits(2, 0.160, 0.200);
+total->SetParLimits(4, 11.85, 11.95);
+total->SetParLimits(5, 0.188, 0.2);
+total->SetParLimits(7, 12, 12.1);
+total->SetParLimits(8, 0.9, 1.1);
+total->SetParLimits(10, 12.4, 12.6);
+total->SetParLimits(11, 0.185, 0.225);
+total->SetParLimits(13, 12.8, 13.0);
+total->SetParLimits(14, 0.21, 0.25);
+total->SetParLimits(16, 13.1, 13.2);
+total->SetParLimits(17, 0.38, 0.47);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
 exTotalH->Fit(total, "R+");
@@ -359,10 +374,7 @@ exTotalH->Fit(total, "R+");
 // Configurar opciones de visualización para la línea de ajuste resultante
 total->SetLineColor(kRed);
 total->SetLineWidth(2);
-total->SetNpx(5000);
-exTotalH->SetTitle("Energy distribution ^{10}B"); 
-exTotalH->SetXTitle("E (MeV)");
-exTotalH->SetYTitle("Counts");
+
 // Dibujar solo la línea de ajuste resultante
 exTotalH->Draw("HIST");
 total->Draw("SAME");
@@ -372,51 +384,44 @@ Double_t par_total[18];
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Breit-Wigner con los parámetros ajustados
-TF1 *new_bw1 = new TF1("new_m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 10, 13);
-TF1 *new_bw2 = new TF1("new_m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 10, 13);
-TF1 *new_bw3 = new TF1("new_m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 11, 14);
-TF1 *new_bw4 = new TF1("new_m4", "[9] / ((x * x - [10] * [10]) * (x * x - [10] * [10]) + [10] * [10] * [11] * [11])", 11, 15);
-TF1 *new_bw5 = new TF1("new_m5", "[12] / ((x * x - [13] * [13]) * (x * x - [13] * [13]) + [13] * [13] * [14] * [14])", 11, 15);
-TF1 *new_bw6 = new TF1("new_m6", "[15] / ((x * x - [16] * [16]) * (x * x - [16] * [16]) + [16] * [16] * [17] * [17])", 11, 15);
-
-new_bw1->SetNpx(5000);
-new_bw2->SetNpx(5000);
-new_bw3->SetNpx(5000);
-new_bw4->SetNpx(5000);
-new_bw5->SetNpx(5000);
-new_bw6->SetNpx(5000);
+TF1 *new_bw1 = new TF1("new_m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.2, 12.0);
+TF1 *new_bw2 = new TF1("new_m2", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.5, 12.5);
+TF1 *new_bw3 = new TF1("new_m3", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 12.0, 13.0);
+TF1 *new_bw4 = new TF1("new_m4", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 12.5, 14);
+TF1 *new_bw5 = new TF1("new_m5", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 12.8, 14.4);
+TF1 *new_bw6 = new TF1("new_m6", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 13.7, 14.5);
 
 new_bw1->SetParameters(par_total);
-new_bw2->SetParameters(par_total);
-new_bw3->SetParameters(par_total);
-new_bw4->SetParameters(par_total);
-new_bw5->SetParameters(par_total);
-new_bw6->SetParameters(par_total);
+new_bw2->SetParameters(par_total + 3);
+new_bw3->SetParameters(par_total + 6);
+new_bw4->SetParameters(par_total + 9);
+new_bw5->SetParameters(par_total + 12);
+new_bw6->SetParameters(par_total + 15);
 
 // Configurar nombres de parámetros
 new_bw1->SetParName(0, "Amp1");
 new_bw1->SetParName(1, "Mean1");
 new_bw1->SetParName(2, "Width1");
 
-new_bw2->SetParName(3, "Amp2");
-new_bw2->SetParName(4, "Mean2");
-new_bw2->SetParName(5, "Width2");
+new_bw2->SetParName(0, "Amp2");
+new_bw2->SetParName(1, "Mean2");
+new_bw2->SetParName(2, "Width2");
 
-new_bw3->SetParName(6, "Amp3");
-new_bw3->SetParName(7, "Mean3");
-new_bw3->SetParName(8, "Width3");
+new_bw3->SetParName(0, "Amp3");
+new_bw3->SetParName(1, "Mean3");
+new_bw3->SetParName(2, "Width3");
 
-new_bw4->SetParName(9, "Amp4");
-new_bw4->SetParName(10, "Mean4");
-new_bw4->SetParName(11, "Width4");
+new_bw4->SetParName(0, "Amp4");
+new_bw4->SetParName(1, "Mean4");
+new_bw4->SetParName(2, "Width4");
 
-new_bw5->SetParName(12, "Amp5");
-new_bw5->SetParName(13, "Mean5");
-new_bw5->SetParName(14, "Width5");
+new_bw5->SetParName(0, "Amp5");
+new_bw5->SetParName(1, "Mean5");
+new_bw5->SetParName(2, "Width5");
 
-new_bw6->SetParName(15, "Amp6");
-new_bw6->SetParName(16, "Mean6");
-new_bw6->SetParName(17, "Width6");
+new_bw6->SetParName(0, "Amp6");
+new_bw6->SetParName(1, "Mean6");
+new_bw6->SetParName(2, "Width6");
 
 // Dibujar las nuevas funciones en el mismo Canvas
 new_bw1->SetLineColor(kBlack);
@@ -433,32 +438,10 @@ new_bw4->Draw("SAME");
 new_bw5->Draw("SAME");
 new_bw6->Draw("SAME");
 
-// Configurar la leyenda
-TLegend *legend = new TLegend(0.6, 0.6, 0.9, 0.9); // Coordenadas (x1, y1, x2, y2) donde x1,y1 son esquina inferior izquierda y x2,y2 son esquina superior derecha en fracción del canvas
-legend->AddEntry(exTotalH, "Experimental Data"); // Agregar entrada para los datos experimentales
-legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
-legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
-legend->SetBorderSize(0); // Sin borde
-legend->Draw(); // Dibujar la leyenda
-
 // Mostrar el Canvas
 gPad->Update();
 
-// Calcular las integrales de cada función sobre su dominio
-double integral1 = new_bw1->Integral(10, 15);
-double integral2 = new_bw2->Integral(10, 15);
-double integral3 = new_bw3->Integral(10, 15);
-double integral4 = new_bw4->Integral(10, 15);
-double integral5 = new_bw5->Integral(10, 15);
-double integral6 = new_bw6->Integral(10, 15);
 
-// Imprimir los resultados
-std::cout << "Integral de new_bw1 en [10, 13]: " << integral1 << std::endl;
-std::cout << "Integral de new_bw2 en [10, 13]: " << integral2 << std::endl;
-std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << std::endl;
-std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << std::endl;
-std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << std::endl;
-std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << std::endl;
 
 }
 
