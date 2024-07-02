@@ -445,12 +445,12 @@ legend->Draw(); // Dibujar la leyenda
 gPad->Update();
 
 // Calcular las integrales de cada función sobre su dominio con incertidumbres asociadas
-double integral1, error1;
-double integral2, error2;
-double integral3, error3;
-double integral4, error4;
-double integral5, error5;
-double integral6, error6;
+Double_t integral1, error1;
+Double_t integral2, error2;
+Double_t integral3, error3;
+Double_t integral4, error4;
+Double_t integral5, error5;
+Double_t integral6, error6;
 
 integral1 = new_bw1->IntegralAndError(10, 13, error1);
 integral2 = new_bw2->IntegralAndError(10, 13, error2);
