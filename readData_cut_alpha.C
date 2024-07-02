@@ -495,34 +495,46 @@ legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
 legend->SetBorderSize(0); // Sin borde
 legend->Draw(); // Dibujar la leyenda
 
-// Calcular la integral de cada función Breit-Wigner ajustada
-Double_t integral_bw1 = new_bw1->Integral(8.5, 12);
-Double_t integral_bw2 = new_bw2->Integral(8.5, 12);
-Double_t integral_bw3 = new_bw3->Integral(9, 14.0);
-Double_t integral_bw4 = new_bw4->Integral(9, 14);
-Double_t integral_bw5 = new_bw5->Integral(9, 14);
-Double_t integral_bw6 = new_bw6->Integral(9, 14);
-Double_t integral_bw7 = new_bw7->Integral(9, 14);
-Double_t integral_bw8 = new_bw8->Integral(9, 14);
-Double_t integral_bw9 = new_bw9->Integral(9, 14);
-Double_t integral_bw10 = new_bw10->Integral(10, 14.5);
-Double_t integral_bw11 = new_bw11->Integral(10, 14.5);
-Double_t integral_bw12 = new_bw12->Integral(10, 14.5);
+// Calcular la integral y la incertidumbre de cada función Breit-Wigner ajustada
+Double_t integral_bw1, error_bw1;
+Double_t integral_bw2, error_bw2;
+Double_t integral_bw3, error_bw3;
+Double_t integral_bw4, error_bw4;
+Double_t integral_bw5, error_bw5;
+Double_t integral_bw6, error_bw6;
+Double_t integral_bw7, error_bw7;
+Double_t integral_bw8, error_bw8;
+Double_t integral_bw9, error_bw9;
+Double_t integral_bw10, error_bw10;
+Double_t integral_bw11, error_bw11;
+Double_t integral_bw12, error_bw12;
 
-// Imprimir los resultados
-cout << "Integral of new_bw1: " << integral_bw1 << endl;
-cout << "Integral of new_bw2: " << integral_bw2 << endl;
-cout << "Integral of new_bw3: " << integral_bw3 << endl;
-cout << "Integral of new_bw4: " << integral_bw4 << endl;
-cout << "Integral of new_bw5: " << integral_bw5 << endl;
-cout << "Integral of new_bw6: " << integral_bw6 << endl;
-cout << "Integral of new_bw7: " << integral_bw7 << endl;
-cout << "Integral of new_bw8: " << integral_bw8 << endl;
-cout << "Integral of new_bw9: " << integral_bw9 << endl;
-cout << "Integral of new_bw10: " << integral_bw10 << endl;
-cout << "Integral of new_bw11: " << integral_bw11 << endl;
-cout << "Integral of new_bw12: " << integral_bw12 << endl;
+integral_bw1 = new_bw1->IntegralAndError(8.5, 12, error_bw1);
+integral_bw2 = new_bw2->IntegralAndError(8.5, 12, error_bw2);
+integral_bw3 = new_bw3->IntegralAndError(9, 13.0, error_bw3);
+integral_bw4 = new_bw4->IntegralAndError(9, 13, error_bw4);
+integral_bw5 = new_bw5->IntegralAndError(9, 13, error_bw5);
+integral_bw6 = new_bw6->IntegralAndError(9, 13, error_bw6);
+integral_bw7 = new_bw7->IntegralAndError(9, 13, error_bw7);
+integral_bw8 = new_bw8->IntegralAndError(9, 13, error_bw8);
+integral_bw9 = new_bw9->IntegralAndError(9, 13, error_bw9);
+integral_bw10 = new_bw10->IntegralAndError(10, 14.5, error_bw10);
+integral_bw11 = new_bw11->IntegralAndError(10, 14.5, error_bw11);
+integral_bw12 = new_bw12->IntegralAndError(10, 14.5, error_bw12);
 
+// Imprimir los resultados con incertidumbres
+cout << "Integral of new_bw1: " << integral_bw1 << " ± " << error_bw1 << endl;
+cout << "Integral of new_bw2: " << integral_bw2 << " ± " << error_bw2 << endl;
+cout << "Integral of new_bw3: " << integral_bw3 << " ± " << error_bw3 << endl;
+cout << "Integral of new_bw4: " << integral_bw4 << " ± " << error_bw4 << endl;
+cout << "Integral of new_bw5: " << integral_bw5 << " ± " << error_bw5 << endl;
+cout << "Integral of new_bw6: " << integral_bw6 << " ± " << error_bw6 << endl;
+cout << "Integral of new_bw7: " << integral_bw7 << " ± " << error_bw7 << endl;
+cout << "Integral of new_bw8: " << integral_bw8 << " ± " << error_bw8 << endl;
+cout << "Integral of new_bw9: " << integral_bw9 << " ± " << error_bw9 << endl;
+cout << "Integral of new_bw10: " << integral_bw10 << " ± " << error_bw10 << endl;
+cout << "Integral of new_bw11: " << integral_bw11 << " ± " << error_bw11 << endl;
+cout << "Integral of new_bw12: " << integral_bw12 << " ± " << error_bw12 << endl;
 
 }
 
