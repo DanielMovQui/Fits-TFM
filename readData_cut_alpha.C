@@ -523,18 +523,17 @@ integral_bw11 = new_bw11->IntegralAndError(10, 14.5, error_bw11);
 integral_bw12 = new_bw12->IntegralAndError(10, 14.5, error_bw12);
 
 // Imprimir los resultados con incertidumbres
-cout << "Integral of new_bw1: " << integral_bw1 << " ± " << error_bw1 << endl;
-cout << "Integral of new_bw2: " << integral_bw2 << " ± " << error_bw2 << endl;
-cout << "Integral of new_bw3: " << integral_bw3 << " ± " << error_bw3 << endl;
-cout << "Integral of new_bw4: " << integral_bw4 << " ± " << error_bw4 << endl;
-cout << "Integral of new_bw5: " << integral_bw5 << " ± " << error_bw5 << endl;
-cout << "Integral of new_bw6: " << integral_bw6 << " ± " << error_bw6 << endl;
-cout << "Integral of new_bw7: " << integral_bw7 << " ± " << error_bw7 << endl;
-cout << "Integral of new_bw8: " << integral_bw8 << " ± " << error_bw8 << endl;
-cout << "Integral of new_bw9: " << integral_bw9 << " ± " << error_bw9 << endl;
-cout << "Integral of new_bw10: " << integral_bw10 << " ± " << error_bw10 << endl;
-cout << "Integral of new_bw11: " << integral_bw11 << " ± " << error_bw11 << endl;
-cout << "Integral of new_bw12: " << integral_bw12 << " ± " << error_bw12 << endl;
-
+std::cout << "Integral of new_bw1: " << integral_bw1 << " ± " << error_bw1 << std::endl;
+std::cout << "Integral of new_bw2: " << integral_bw2 << " ± " << error_bw2 << std::endl;
+std::cout << "Integral of new_bw3: " << integral_bw3 << " ± " << error_bw3 << std::endl;
+std::cout << "Integral of new_bw4: " << integral_bw4 << " ± " << error_bw4 << std::endl;
+std::cout << "Integral of new_bw5: " << integral_bw5 << " ± " << error_bw5 << std::endl;
+std::cout << "Integral of new_bw6: " << integral_bw6 << " ± " << error_bw6 << std::endl;
+std::cout << "Integral of new_bw7: " << integral_bw7 << " ± " << error_bw7 << std::endl;
+std::cout << "Integral of new_bw8: " << integral_bw8 << " ± " << error_bw8 << std::endl;
+std::cout << "Integral of new_bw9: " << integral_bw9 << " ± " << error_bw9 << std::endl;
+std::cout << "Integral of new_bw10: " << integral_bw10 << " ± " << error_bw10 << std::endl;
+std::cout << "Integral of new_bw11: " << integral_bw11 << " ± " << error_bw11 << std::endl;
+std::cout << "Integral of new_bw12: " << integral_bw12 << " ± " << error_bw12 << std::endl;
 }
 
