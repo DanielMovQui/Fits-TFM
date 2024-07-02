@@ -444,28 +444,20 @@ legend->Draw(); // Dibujar la leyenda
 // Mostrar el Canvas
 gPad->Update();
 
-// Calcular las integrales de cada función sobre su dominio con incertidumbres asociadas
-Double_t integral1, error1;
-Double_t integral2, error2;
-Double_t integral3, error3;
-Double_t integral4, error4;
-Double_t integral5, error5;
-Double_t integral6, error6;
+// Calcular las integrales de cada función sobre su dominio
+double integral1 = new_bw1->Integral(10, 15);
+double integral2 = new_bw2->Integral(10, 15);
+double integral3 = new_bw3->Integral(10, 15);
+double integral4 = new_bw4->Integral(10, 15);
+double integral5 = new_bw5->Integral(10, 15);
+double integral6 = new_bw6->Integral(10, 15);
 
-integral1 = new_bw1->IntegralAndError(10, 13, error1);
-integral2 = new_bw2->IntegralAndError(10, 13, error2);
-integral3 = new_bw3->IntegralAndError(11, 14, error3);
-integral4 = new_bw4->IntegralAndError(11, 15, error4);
-integral5 = new_bw5->IntegralAndError(11, 15, error5);
-integral6 = new_bw6->IntegralAndError(11, 15, error6);
-
-// Imprimir los resultados con incertidumbres asociadas
-std::cout << "Integral de new_bw1 en [10, 13]: " << integral1 << " ± " << error1 << std::endl;
-std::cout << "Integral de new_bw2 en [10, 13]: " << integral2 << " ± " << error2 << std::endl;
-std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << " ± " << error3 << std::endl;
-std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << " ± " << error4 << std::endl;
-std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << " ± " << error5 << std::endl;
-std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << " ± " << error6 << std::endl;
-
+// Imprimir los resultados
+std::cout << "Integral de new_bw1 en [10, 13]: " << integral1 << std::endl;
+std::cout << "Integral de new_bw2 en [10, 13]: " << integral2 << std::endl;
+std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << std::endl;
+std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << std::endl;
+std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << std::endl;
+std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << std::endl;
 }
 
