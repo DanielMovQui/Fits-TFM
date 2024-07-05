@@ -227,3 +227,64 @@ gROOT->SetBatch(kFALSE);
   coinTimeH->Draw();
 
 */
+
+TF1 *g1 = new TF1("m1", "gaus", 5, 9.5);
+
+// Definir parámetros iniciales para cada gaussiana
+g1->SetParameters(100, 7.28, 0.1);  // Parámetros iniciales: amplitud, media, desviación estándar
+
+// The total is the sum of the five, each has 3 parameters
+TF1 *total = new TF1("mstotal", "gaus(0)", 5, 9.5);
+
+// Fit each function and add it to the list of functions
+exTotalH->Fit(g1, "R");
+
+// Get the parameters from the fit
+Double_t par[3];
+g1->GetParameters(&par[0]);
+
+// Use the parameters on the sum
+total->SetParameters(par);
+
+// Configurar nombres de parámetros uno por uno
+total->SetParName(0, "A1");
+total->SetParName(1, "Mean1");
+total->SetParName(2, "Sigma1");
+
+//total->SetParLimits(0, )
+total->SetParLimits(1, 7.2, 7.3); 
+total->SetParLimits(2, 0.05, 0.200);
+
+// Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
+exTotalH->Fit(total, "R+");
+// Configurar opciones de visualización para la línea de ajuste resultante
+total->SetLineColor(kRed);  // Puedes ajustar el color según tus preferencias
+total->SetLineWidth(2);     // Puedes ajustar el grosor de la línea según tus preferencias
+// Dibujar solo la línea de ajuste resultante
+exTotalH->Draw("HIST");
+total->Draw("SAME");
+
+// Obtener los parámetros ajustados de la función total
+Double_t par_total[3];
+total->GetParameters(par_total);
+
+// Crear nuevas funciones Gaussianas con los parámetros ajustados
+TF1 *new_g1 = new TF1("new_m1", "gaus", 5, 9.5);
+
+// Establecer los parámetros ajustados en las nuevas funciones
+new_g1->SetParameters(par_total);
+
+// Configurar nombres de parámetros
+new_g1->SetParName(0, "A1");
+new_g1->SetParName(1, "Mean1");
+new_g1->SetParName(2, "Sigma1");
+
+// Dibujar las nuevas funciones en el mismo Canvas
+new_g1->SetLineColor(kBlack);
+
+new_g1->Draw("SAME");
+
+// Mostrar el Canvas
+gPad->Update();
+
+
