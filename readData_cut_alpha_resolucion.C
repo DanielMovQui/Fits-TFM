@@ -260,13 +260,13 @@ gROOT->SetBatch(kFALSE);
 
 */
 
-TF1 *g1 = new TF1("m1", "gaus", 7, 7.5);
+TF1 *g1 = new TF1("m1", "gaus", 4.3, 4.55);
 
 // Definir parámetros iniciales para cada gaussiana
-g1->SetParameters(100, 7.28, 0.1);  // Parámetros iniciales: amplitud, media, desviación estándar
+g1->SetParameters(100, 4.44, 0.1);  // Parámetros iniciales: amplitud, media, desviación estándar
 
 // The total is the sum of the five, each has 3 parameters
-TF1 *total = new TF1("mstotal", "gaus(0)", 7, 7.5);
+TF1 *total = new TF1("mstotal", "gaus(0)", 4.3, 4.55);
 
 // Fit each function and add it to the list of functions
 exTotalH->Fit(g1, "R");
@@ -284,8 +284,8 @@ total->SetParName(1, "Mean1");
 total->SetParName(2, "Sigma1");
 
 //total->SetParLimits(0, )
-total->SetParLimits(1, 7.2, 7.3); 
-total->SetParLimits(2, 0.05, 0.200);
+total->SetParLimits(1, 4.4, 4.5); 
+total->SetParLimits(2, 0.01, 0.300);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
 exTotalH->Fit(total, "R+");
@@ -301,7 +301,7 @@ Double_t par_total[3];
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Gaussianas con los parámetros ajustados
-TF1 *new_g1 = new TF1("new_m1", "gaus", 7, 7.5);
+TF1 *new_g1 = new TF1("new_m1", "gaus", 4.3, 4.55);
 
 // Establecer los parámetros ajustados en las nuevas funciones
 new_g1->SetParameters(par_total);
