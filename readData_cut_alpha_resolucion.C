@@ -28,122 +28,154 @@ tree->SetBranchStatus("coinTime", 1);
 tree->SetBranchStatus("detID", 1);
 tree->SetBranchStatus("e", 1);
 
-auto cutLitium1 = new TCutG("CUTLITIUM1",10);
-   cutLitium1->SetVarX("rdtH[0]");
-   cutLitium1->SetVarY("");
-   cutLitium1->SetTitle("Graph");
-   cutLitium1->SetFillStyle(1000);
-   cutLitium1->SetPoint(0,82.5365,3299.11);
-   cutLitium1->SetPoint(1,386.778,1441.96);
-   cutLitium1->SetPoint(2,1321.24,584.821);
-   cutLitium1->SetPoint(3,3461.8,263.393);
-   cutLitium1->SetPoint(4,4037.68,424.107);
-   cutLitium1->SetPoint(5,3374.87,888.393);
-   cutLitium1->SetPoint(6,1245.18,1316.96);
-   cutLitium1->SetPoint(7,93.4023,3299.11);
-   cutLitium1->SetPoint(8,82.5365,3227.68);
-   cutLitium1->SetPoint(9,82.5365,3299.11);
-   cutLitium1->Draw("");
+//Cuts
+auto cutProtonRecoil1 = new TCutG("CUTPROTONRECOIL1",6);
+    cutProtonRecoil1->SetVarX("rdtH[0]");
+    cutProtonRecoil1->SetVarY("");
+    cutProtonRecoil1->SetTitle("Graph");
+    cutProtonRecoil1->SetFillStyle(1000);
+    cutProtonRecoil1->SetPoint(0,3220.905,1444.03);
+    cutProtonRecoil1->SetPoint(1,3311.691,1170.896);
+    cutProtonRecoil1->SetPoint(2,3262.632,1016.418);
+    cutProtonRecoil1->SetPoint(3,3164.516,1311.94);
+    cutProtonRecoil1->SetPoint(4,3219.777,1448.507);
+    cutProtonRecoil1->SetPoint(5,3220.905,1444.03);
 
-auto cutLitium3 = new TCutG("CUTLITIUM3",8);
-   cutLitium3->SetVarX("rdtH[2]");
-   cutLitium3->SetVarY("");
-   cutLitium3->SetTitle("Graph");
-   cutLitium3->SetFillStyle(1000);
-   cutLitium3->SetPoint(0,267.255,2129.46);
-   cutLitium3->SetPoint(1,3689.98,540.179);
-   cutLitium3->SetPoint(2,2798.98,236.607);
-   cutLitium3->SetPoint(3,1038.73,629.464);
-   cutLitium3->SetPoint(4,256.389,2165.18);
-   cutLitium3->SetPoint(5,441.107,2004.46);
-   cutLitium3->SetPoint(6,419.376,2040.18);
-   cutLitium3->SetPoint(7,267.255,2129.46);
-   cutLitium3->Draw("");
+auto cutProtonRecoil2 = new TCutG("CUTPROTONRECOIL2",6);
+   cutProtonRecoil2->SetVarX("rdtH[1]");
+   cutProtonRecoil2->SetVarY("");
+   cutProtonRecoil2->SetTitle("Graph");
+   cutProtonRecoil2->SetFillStyle(1000);
+   cutProtonRecoil2->SetPoint(0,3119.599,1380.306);
+   cutProtonRecoil2->SetPoint(1,3046.031,1344.799);
+   cutProtonRecoil2->SetPoint(2,3112.911,1077.659);
+   cutProtonRecoil2->SetPoint(3,3197.625,1119.928);
+   cutProtonRecoil2->SetPoint(4,3120.713,1381.996);
+   cutProtonRecoil2->SetPoint(5,3119.599,1380.306);
+   cutProtonRecoil2->Draw("l");
 
-auto cutLitium2 = new TCutG("CUTLITIUM2",7);
-   cutLitium2->SetVarX("rdtH[1]");
-   cutLitium2->SetVarY("");
-   cutLitium2->SetTitle("Graph");
-   cutLitium2->SetFillStyle(1000);
-   cutLitium2->SetPoint(0,202.06,2084.82);
-   cutLitium2->SetPoint(1,3461.8,531.25);
-   cutLitium2->SetPoint(2,2549.07,334.821);
-   cutLitium2->SetPoint(3,930.068,727.679);
-   cutLitium2->SetPoint(4,136.865,1977.68);
-   cutLitium2->SetPoint(5,245.523,2102.68);
-   cutLitium2->SetPoint(6,202.06,2084.82);
-   cutLitium2->Draw("");
+auto cutProtonRecoil3 = new TCutG("CUTPROTONRECOIL3",6);
+   cutProtonRecoil3->SetVarX("rdtH[2]");
+   cutProtonRecoil3->SetVarY("");
+   cutProtonRecoil3->SetTitle("Graph");
+   cutProtonRecoil3->SetFillStyle(1000);
+   cutProtonRecoil3->SetPoint(0,3261.741,1338.105);
+   cutProtonRecoil3->SetPoint(1,3168.548,1306.482);
+   cutProtonRecoil3->SetPoint(2,3249.519,1100.931);
+   cutProtonRecoil3->SetPoint(3,3348.823,1144.413);
+   cutProtonRecoil3->SetPoint(4,3264.797,1342.058);
+   cutProtonRecoil3->SetPoint(5,3261.741,1338.105);
 
-auto cutLitium4 = new TCutG("CUTLITIUM4",6);
-   cutLitium4->SetVarX("rdtH[3]");
-   cutLitium4->SetVarY("");
-   cutLitium4->SetTitle("Graph");
-   cutLitium4->SetFillStyle(1000);
-   cutLitium4->SetPoint(0,147.731,2040.18);
-   cutLitium4->SetPoint(1,3776.9,575.893);
-   cutLitium4->SetPoint(2,3092.36,272.321);
-   cutLitium4->SetPoint(3,886.605,736.607);
-   cutLitium4->SetPoint(4,158.597,2093.75);
-   cutLitium4->SetPoint(5,147.731,2040.18);
-   cutLitium4->Draw("");
+auto cutProtonRecoil4 = new TCutG("CUTPROTONRECOIL4",6);
+   cutProtonRecoil4->SetVarX("rdtH[3]");
+   cutProtonRecoil4->SetVarY("");
+   cutProtonRecoil4->SetTitle("Graph");
+   cutProtonRecoil4->SetFillStyle(1000);
+   cutProtonRecoil4->SetPoint(0,3196.594,1393.424);
+   cutProtonRecoil4->SetPoint(1,3121.597,1296.035);
+   cutProtonRecoil4->SetPoint(2,3229.732,1090.438);
+   cutProtonRecoil4->SetPoint(3,3311.706,1178.358);
+   cutProtonRecoil4->SetPoint(4,3194.85,1389.366);
+   cutProtonRecoil4->SetPoint(5,3196.594,1393.424);
 
-auto cutalpha1 = new TCutG("CUTALPHA1",7);
-   cutalpha1->SetVarX("rdtH[0]");
-   cutalpha1->SetVarY("");
-   cutalpha1->SetTitle("Graph");
-   cutalpha1->SetFillStyle(1000);
-   cutalpha1->SetPoint(0,39.0733,1120.54);
-   cutalpha1->SetPoint(1,39.0733,102.679);
-   cutalpha1->SetPoint(2,2896.78,138.393);
-   cutalpha1->SetPoint(3,1527.69,513.393);
-   cutalpha1->SetPoint(4,28.2075,1120.54);
-   cutalpha1->SetPoint(5,39.0733,1120.54);
-   cutalpha1->SetPoint(6,39.0733,1120.54);
-   cutalpha1->Draw("");
+auto cutBoronRecoil1 = new TCutG("CUTBORONRECOIL1",19);
+   cutBoronRecoil1->SetVarX("rdtH[0]");
+   cutBoronRecoil1->SetVarY("");
+   cutBoronRecoil1->SetTitle("Graph");
+   cutBoronRecoil1->SetFillStyle(1000);
+   cutBoronRecoil1->SetPoint(0,128.5845,5519.572);
+   cutBoronRecoil1->SetPoint(1,437.6618,4705.767);
+   cutBoronRecoil1->SetPoint(2,976.4588,3987.703);
+   cutBoronRecoil1->SetPoint(3,1749.152,3221.769);
+   cutBoronRecoil1->SetPoint(4,2434.134,2663.276);
+   cutBoronRecoil1->SetPoint(5,2881.043,2455.835);
+   cutBoronRecoil1->SetPoint(6,3014.698,2535.62);
+   cutBoronRecoil1->SetPoint(7,3378.073,2415.943);
+   cutBoronRecoil1->SetPoint(8,3453.254,2128.718);
+   cutBoronRecoil1->SetPoint(9,3373.896,1801.6);
+   cutBoronRecoil1->SetPoint(10,3236.065,1761.708);
+   cutBoronRecoil1->SetPoint(11,2642.97,2009.04);
+   cutBoronRecoil1->SetPoint(12,1711.562,2671.254);
+   cutBoronRecoil1->SetPoint(13,851.1572,3397.296);
+   cutBoronRecoil1->SetPoint(14,178.7051,4370.67);
+   cutBoronRecoil1->SetPoint(15,45.05008,4681.831);
+   cutBoronRecoil1->SetPoint(16,15.81304,5288.196);
+   cutBoronRecoil1->SetPoint(17,86.81729,5551.485);
+   cutBoronRecoil1->SetPoint(18,128.5845,5519.572); 
 
-auto cutalpha3 = new TCutG("CUTALPHA3",8);
-   cutalpha3->SetVarX("rdtH[2]");
-   cutalpha3->SetVarY("");
-   cutalpha3->SetTitle("Graph");
-   cutalpha3->SetFillStyle(1000);
-   cutalpha3->SetPoint(0,2766.39,254.464);
-   cutalpha3->SetPoint(1,701.886,736.607);
-   cutalpha3->SetPoint(2,104.268,1522.32);
-   cutalpha3->SetPoint(3,17.3418,1058.04);
-   cutalpha3->SetPoint(4,202.06,165.179);
-   cutalpha3->SetPoint(5,2733.79,129.464);
-   cutalpha3->SetPoint(6,2733.79,290.179);
-   cutalpha3->SetPoint(7,2766.39,254.464);
-   cutalpha3->Draw("");
+auto cutBoronRecoil2 = new TCutG("CUTBORONRECOIL2",16);
+   cutBoronRecoil2->SetVarX("rdtH[1]");
+   cutBoronRecoil2->SetVarY("");
+   cutBoronRecoil2->SetTitle("Graph");
+   cutBoronRecoil2->SetFillStyle(1000);
+   cutBoronRecoil2->SetPoint(0,193.6272,5099.459);
+   cutBoronRecoil2->SetPoint(1,737.4532,4212.577);
+   cutBoronRecoil2->SetPoint(2,1289.646,3605.343);
+   cutBoronRecoil2->SetPoint(3,2004.986,2950.169);
+   cutBoronRecoil2->SetPoint(4,2540.446,2614.592);
+   cutBoronRecoil2->SetPoint(5,2967.14,2510.723);
+   cutBoronRecoil2->SetPoint(6,3301.802,2406.854);
+   cutBoronRecoil2->SetPoint(7,3276.703,1951.428);
+   cutBoronRecoil2->SetPoint(8,2653.394,1943.438);
+   cutBoronRecoil2->SetPoint(9,1661.958,2662.531);
+   cutBoronRecoil2->SetPoint(10,616.1382,3637.302);
+   cutBoronRecoil2->SetPoint(11,105.7783,4508.204);
+   cutBoronRecoil2->SetPoint(12,26.29606,4955.64);
+   cutBoronRecoil2->SetPoint(13,201.9937,5115.439);
+   cutBoronRecoil2->SetPoint(14,201.9937,5115.439);
+   cutBoronRecoil2->SetPoint(15,193.6272,5099.459); 
 
-auto cutalpha2 = new TCutG("CUTALPHA2",8);
-   cutalpha2->SetVarX("rdtH[1]");
-   cutalpha2->SetVarY("");
-   cutalpha2->SetTitle("Graph");
-   cutalpha2->SetFillStyle(1000);
-   cutalpha2->SetPoint(0,115.134,1227.68);
-   cutalpha2->SetPoint(1,1799.33,424.107);
-   cutalpha2->SetPoint(2,2657.73,245.536);
-   cutalpha2->SetPoint(3,2049.24,120.536);
-   cutalpha2->SetPoint(4,343.315,227.679);
-   cutalpha2->SetPoint(5,28.2075,1138.39);
-   cutalpha2->SetPoint(6,158.597,1227.68);
-   cutalpha2->SetPoint(7,115.134,1227.68);
-   cutalpha2->Draw("");
+auto cutBoronRecoil3 = new TCutG("CUTBORONRECOIL3",16);
+   cutBoronRecoil3->SetVarX("rdtH[2]");
+   cutBoronRecoil3->SetVarY("");
+   cutBoronRecoil3->SetTitle("Graph");
+   cutBoronRecoil3->SetFillStyle(1000);
+   cutBoronRecoil3->SetPoint(0,142.6864,5002.586);
+   cutBoronRecoil3->SetPoint(1,544.0122,4525.102);
+   cutBoronRecoil3->SetPoint(2,1048.773,3821.015);
+   cutBoronRecoil3->SetPoint(3,2045.881,3011.72);
+   cutBoronRecoil3->SetPoint(4,2790.609,2550.422);
+   cutBoronRecoil3->SetPoint(5,3138.149,2518.05);
+   cutBoronRecoil3->SetPoint(6,3452.59,2323.82);
+   cutBoronRecoil3->SetPoint(7,3460.865,1789.685);
+   cutBoronRecoil3->SetPoint(8,2956.104,1708.756);
+   cutBoronRecoil3->SetPoint(9,2401.696,2032.474);
+   cutBoronRecoil3->SetPoint(10,345.418,3982.874);
+   cutBoronRecoil3->SetPoint(11,97.17527,4427.986);
+   cutBoronRecoil3->SetPoint(12,64.07623,4929.749);
+   cutBoronRecoil3->SetPoint(13,134.4117,5018.772);
+   cutBoronRecoil3->SetPoint(14,134.4117,5018.772);
+   cutBoronRecoil3->SetPoint(15,142.6864,5002.586);
 
-auto cutalpha4 = new TCutG("CUTALPHA4",7);
-   cutalpha4->SetVarX("rdtH[3]");
-   cutalpha4->SetVarY("");
-   cutalpha4->SetTitle("Graph");
-   cutalpha4->SetFillStyle(1000);
-   cutalpha4->SetPoint(0,49.9391,1111.61);
-   cutalpha4->SetPoint(1,332.45,200.893);
-   cutalpha4->SetPoint(2,2538.2,58.0357);
-   cutalpha4->SetPoint(3,2646.86,308.036);
-   cutalpha4->SetPoint(4,538.899,772.321);
-   cutalpha4->SetPoint(5,39.0733,1111.61);
-   cutalpha4->SetPoint(6,49.9391,1111.61);
-   cutalpha4->Draw("");
+auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
+   cutBoronRecoil4->SetVarX("rdtH[3]");
+   cutBoronRecoil4->SetVarY("");
+   cutBoronRecoil4->SetTitle("Graph");
+   cutBoronRecoil4->SetFillStyle(1000);
+   cutBoronRecoil4->SetPoint(0,180.9049,5017.467);
+   cutBoronRecoil4->SetPoint(1,805.8984,4237.362);
+   cutBoronRecoil4->SetPoint(2,1377.788,3565.144);
+   cutBoronRecoil4->SetPoint(3,2174.348,2876.327);
+   cutBoronRecoil4->SetPoint(4,2766.662,2486.275);
+   cutBoronRecoil4->SetPoint(5,3085.286,2436.481);
+   cutBoronRecoil4->SetPoint(6,3346.721,2411.584);
+   cutBoronRecoil4->SetPoint(7,3407.995,2129.418);
+   cutBoronRecoil4->SetPoint(8,3277.278,1764.262);
+   cutBoronRecoil4->SetPoint(9,2774.832,1855.551);
+   cutBoronRecoil4->SetPoint(10,1937.422,2270.501);
+   cutBoronRecoil4->SetPoint(11,585.3125,3706.227);
+   cutBoronRecoil4->SetPoint(12,160.4803,4353.548);
+   cutBoronRecoil4->SetPoint(13,13.42304,4834.89);
+   cutBoronRecoil4->SetPoint(14,58.35721,5025.766);
+   cutBoronRecoil4->SetPoint(15,184.9899,5025.766);
+   cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
+
+
+
+
+
+
+
 
 //Histograms
 TH1F* coinTimeH = new TH1F("coinTimeH","coinTimeH",1000,-1000,1000);
@@ -180,12 +212,12 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
       if (x < -0.95 || x > 0.95 || thetaCM < 10 || e[detID] < 1)
         continue;
 
-      bool passLitiumCut = cutLitium1->IsInside(rdt[0], rdt[1]) || cutLitium2->IsInside(rdt[2], rdt[3]) || cutLitium3->IsInside(rdt[4], rdt[5]) || cutLitium4->IsInside(rdt[6], rdt[7]);
-      bool passAlphaCut = cutalpha1->IsInside(rdt[0], rdt[1]) || cutalpha2->IsInside(rdt[2], rdt[3]) || cutalpha3->IsInside(rdt[4], rdt[5]) || cutalpha4->IsInside(rdt[6], rdt[7]);
+    //if (!cutProtonRecoil1->IsInside(rdt[0],rdt[1])  && !cutProtonRecoil2->IsInside(rdt[2],rdt[3]) && !cutProtonRecoil3->IsInside(rdt[4],rdt[5]) && !cutProtonRecoil4->IsInside(rdt[6],rdt[7]))
+      //continue; 
 
-        if (!passLitiumCut && !passAlphaCut)
-            continue;
-
+     //if (!cutBoronRecoil1->IsInside(rdt[0],rdt[1])  && !cutBoronRecoil2->IsInside(rdt[2],rdt[3]) && !cutBoronRecoil3->IsInside(rdt[4],rdt[5]) && !cutBoronRecoil4->IsInside(rdt[6],rdt[7]))
+      //continue; 
+    
       exTotalH->Fill(Ex);
 
      for(auto i=0;i<24;++i){
