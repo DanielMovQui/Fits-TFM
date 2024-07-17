@@ -271,6 +271,8 @@ for (int i = 0; i < sizeof(selectedIndices) / sizeof(selectedIndices[0]); ++i) {
 
 
   TCanvas *c5 = new TCanvas();
+  exTotalH->SetTitle("Total Energy Spectrum");
+  exTotalH->SetStats(0);
   exTotalH->Draw();
 
 /*
