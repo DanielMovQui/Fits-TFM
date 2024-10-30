@@ -44,10 +44,6 @@ double calcularMasaReducida() {
 double k(double E) {
     double E_J = E * MeV_to_J;
     double mu = calcularMasaReducida();
-    if (mu <= 0) {
-        std::cerr << "Error: Masa reducida no válida." << std::endl;
-        return NAN; // Retornar NaN si mu no es válido
-    }
     double k_value = sqrt(2 * mu * E_J) / hbar;
     std::cout << "k(E) calculado: " << k_value << std::endl;
     return k_value;
@@ -55,10 +51,7 @@ double k(double E) {
 
 // Función para calcular el número de onda k0 dado E0
 double k0(double E0) {
-    if (E0<0){
-        std::cerr << "Error: El argumento p debe ser mayor que cero para l > 0." << std::endl;
-    return NAN; // Retornar NaN en caso de error
-    }
+    
     double E0_J = E0 * MeV_to_J;
     double mu = calcularMasaReducida();
     double k0_value = sqrt(2 * mu * E0_J) / hbar;
@@ -94,11 +87,7 @@ double calcularAnchura(double E, double E0, int l, double r, double gamma_0) {
     double k0_value = k0(E0);
     double P_l = k0_value * calcularPenetrabilidad(l, k_value, r);
     double P_l0 = k_value * calcularPenetrabilidad(l, k0_value, r);
-    // Comprobación de valores válidos
-    if (std::isnan(P_l) || std::isnan(P_l0) || P_l == 0) {
-        std::cerr << "Error en el cálculo de la penetrabilidad." << std::endl;
-        return NAN;
-    }
+    // Ecuaciones dadas en el paper de penetrabilidad
     std::cout << "gamma_0: " << gamma_0 << std::endl;
     std::cout << "P_l: " << P_l << std::endl;
     std::cout << "P_l0: " << P_l0 << std::endl;
