@@ -11,7 +11,6 @@
 #include <TPad.h>
 #include <math.h>
 
-
 Float_t Ex = 0;
 Int_t detID = 0;
 Float_t coinTime = 0;
@@ -23,12 +22,11 @@ Float_t thetaCM = 0;
 
 // Constantes de masa y conversiones
 const double u_to_kg = 1.66053906660e-27; // Unidad de masa atómica a kg
-const double MeV_to_J = 1.60218e-13; // Conversión de MeV a J
+const double MeV_to_J = 1.60218e-13; // Conversión de eV a J
 const double hbar = 1.0545718e-34; // Planck constante reducida en J·s
 const double mass_B10_u = 10.012937; // Masa de boro-10 en unidades de masa atómica
 const double mass_neutron_u = 1.008665; // Masa de neutrón en unidades de masa atómica
 const double r = 85 * 1.0e-12;
-
 // Función para calcular la masa reducida
 double calcularMasaReducida() {
     double mass_B10_kg = mass_B10_u * u_to_kg;
@@ -85,57 +83,37 @@ double besselJ(int l, double p) {
     return result;
 }
 
-// Función para calcular la función de Bessel J_l(p)
-double besselJ_sferica(int l, double p) {
-    if (l == 0) {
-        return sin(p) / p;
-    }
-    else if (l == 1) {
-        return (sin(p) / (p * p)) - (cos(p) / p);
-    }
-    else {
-        double j_l_minus_2 = sin(p) / p; // j_0(p)
-        double j_l_minus_1 = (sin(p) / (p * p)) - (cos(p) / p); // j_1(p)
-        double j_l;
-
-        for (int i = 2; i <= l; ++i) {
-            j_l = ((2 * i - 1) / p) * j_l_minus_1 - j_l_minus_2;
-            j_l_minus_2 = j_l_minus_1;
-            j_l_minus_1 = j_l;
-        }
-
-        return j_l;
-    }
-}
-
 // Función para calcular la función de Bessel Y_l(p)
-double besselY_sferica(int l, double p) {
-    if (l == 0) {
-        return -cos(p) / p;
+double besselY(int l, double p) {
+    double x = p / 2.0;
+    if (x <= 0) {
+        std::cerr << "Error: Argumento de besselY no válido." << std::endl;
+        return NAN; // Retornar NaN si x no es válido
     }
-    else if (l == 1) {
-        return (-cos(p) / (p * p)) - (sin(p) / p);
-    }
-    else {
-        double y_l_minus_2 = -cos(p) / p; // y_0(p)
-        double y_l_minus_1 = (-cos(p) / (p * p)) - (sin(p) / p); // y_1(p)
-        double y_l;
+    int max_iter = 10; // Reducido el número máximo de iteraciones para demostración
+    double sum = 0.0;
+    double term = 1.0; // Inicialización corregida a 1.0 para el primer término
+    double factorial = 1.0;
+    double jl = besselJ(l, p); // Calculamos J_l(p) una vez
 
-        for (int i = 2; i <= l; ++i) {
-            y_l = ((2 * i - 1) / p) * y_l_minus_1 - y_l_minus_2;
-            y_l_minus_2 = y_l_minus_1;
-            y_l_minus_1 = y_l;
+    for (int k = 0; k <= max_iter; ++k) {
+        if (k > 0) {
+            term *= (-x * x) / (4.0 * k * (l + k));
+            factorial *= k;
         }
-
-        return y_l;
+        sum += term / (factorial * factorial);
     }
+
+    double result = sum * (2.0 / M_PI * (jl * std::log(x) - 1.0 / M_PI));
+    std::cout << "besselY(" << l << ", " << p << ") calculado: " << result << std::endl;
+    return result;
 }
 
 // Función para calcular la penetrabilidad s_l
 double calcularPenetrabilidad(int l, double k_value, double r) {
     double p = k_value * r;
-    double J = besselJ_sferica(l, p);
-    double Y = besselY_sferica(l, p);
+    double J = besselJ(l, p);
+    double Y = besselY(l, p);
     double penetrabilidad = J * J + Y * Y;
     std::cout << "Penetrabilidad calculada: " << penetrabilidad << std::endl;
     return penetrabilidad;
@@ -145,16 +123,13 @@ double calcularPenetrabilidad(int l, double k_value, double r) {
 double calcularAnchura(double E, double E0, int l, double r, double gamma_0) {
     double k_value = k(E);
     double k0_value = k0(E0);
-    double P_l = k0_value * calcularPenetrabilidad(l, k_value, r);
-    double P_l0 = k_value * calcularPenetrabilidad(l, k0_value, r);
-    std::cout << "gamma_0: " << gamma_0 << std::endl;
-    std::cout << "P_l: " << P_l << std::endl;
-    std::cout << "P_l0: " << P_l0 << std::endl;
+    double P_l = k0_value * calcularPenetrabilidad(l+0.5, k_value, r);
+    double P_l0 = k_value * calcularPenetrabilidad(l+0.5, k0_value, r);
     return gamma_0 * (P_l0 / P_l);
 }
 
 
-void readData_BW_neutron_pen3()
+void readData_BW_neutron_pen_original()
 {
     TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
     TTree *tree = (TTree*)f->Get("tree");
