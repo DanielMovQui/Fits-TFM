@@ -56,7 +56,7 @@ double BWModificada(double *x, double *par, int l, int bw_index) {
     }
 
     // Número total de bines en el histograma
-    int num_bins = 60; 
+    int num_bins = 100000; 
     double bin_width = (E_max_values[bw_index] - E_min_values[bw_index]) / num_bins;  // Ancho de cada bin
 
     // Determinar el bin correspondiente a la energía E
