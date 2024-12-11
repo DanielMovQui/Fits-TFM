@@ -176,7 +176,16 @@ void PhaseSpace_10Bdp11B_test() {
 	MaxLim = 15 ; 
 	Nbin   = 60 ;
 
+	//Acceptance and cuts 
+	double theta_min  = 0 ;
+	double theta_max  = 360 ;
+
 	double thetaCM_min  = 5.0 ;
+	double thetaCM_max  = 360 ;
+
+	double T_min  = 0 ;
+	double T_max  = 100 ;
+	
 
 	double sigma_Ex = 0.150 ; //THis can be modified in the function if the resolution dependes on the Ex energy (or directly include the E anf angle resolution if preferred)
 
