@@ -23,6 +23,7 @@ const TString FileName1 = geoVersion + "_geomanager.root";
 const TString MediumSi = "silicon";
 const TString MediumSteel = "steel";
 const TString MediumPCB = "pcbmvd";
+const TString MediumGas = "He_bajatorr";
 const TString MediumVacuum = "vacuum4";
 const TString CellMedium = "3H_5torr"; // For testing
 const TString TargetMedium = "CD2_polyethylene";
@@ -281,29 +282,76 @@ TGeoVolume *create_detector()
    PCBXZB->SetLineColor(kGreen);
 
    // Annular recoil detectors
-   TGeoVolume *QQQ_Sector1 = gGeoManager->MakeTubs("siliconQQQ_Sector1", silicon, 1.8 / 2, 10.0 / 2, .1 / 2, 4, 86);
+   TGeoVolume *QQQ_Sector1 = gGeoManager->MakeTubs("siliconQQQ_Sector1", silicon, 1.8 / 2, 10.0 / 2, 0.005 / 2, 4, 86);
    gGeoMan->GetVolume(geoVersion)
       ->AddNode(QQQ_Sector1, 26,
                 new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target, new TGeoRotation("rQQQ1", 0, 0, 0)));
    QQQ_Sector1->SetLineColor(kGray);
 
-   TGeoVolume *QQQ_Sector2 = gGeoManager->MakeTubs("siliconQQQ_Sector2", silicon, 1.8 / 2, 10.0 / 2, .1 / 2, 4, 86);
+   TGeoVolume *QQQ_Sector2 = gGeoManager->MakeTubs("siliconQQQ_Sector2", silicon, 1.8 / 2, 10.0 / 2, 0.005 / 2, 4, 86);
    gGeoMan->GetVolume(geoVersion)
       ->AddNode(QQQ_Sector2, 27,
                 new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target, new TGeoRotation("rQQQ2", 0, 0, 90)));
    QQQ_Sector2->SetLineColor(kGray);
 
-   TGeoVolume *QQQ_Sector3 = gGeoManager->MakeTubs("siliconQQQ_Sector3", silicon, 1.8 / 2, 10.0 / 2, .1 / 2, 4, 86);
+   TGeoVolume *QQQ_Sector3 = gGeoManager->MakeTubs("siliconQQQ_Sector3", silicon, 1.8 / 2, 10.0 / 2, 0.005 / 2, 4, 86);
    gGeoMan->GetVolume(geoVersion)
       ->AddNode(QQQ_Sector3, 28,
                 new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target, new TGeoRotation("rQQQ3", 0, 0, 180)));
    QQQ_Sector3->SetLineColor(kGray);
 
-   TGeoVolume *QQQ_Sector4 = gGeoManager->MakeTubs("siliconQQQ_Sector4", silicon, 1.8 / 2, 10.0 / 2, .1 / 2, 4, 86);
+   TGeoVolume *QQQ_Sector4 = gGeoManager->MakeTubs("siliconQQQ_Sector4", silicon, 1.8 / 2, 10.0 / 2, 0.005 / 2, 4, 86);
    gGeoMan->GetVolume(geoVersion)
       ->AddNode(QQQ_Sector4, 29,
                 new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target, new TGeoRotation("rQQQ4", 0, 0, 270)));
    QQQ_Sector4->SetLineColor(kGray);
+
+   // Detectores de energía restante
+float E_detector_thickness = 0.1; // 0.1 cm
+float E_detector_distance = 0.01; // Distancia entre QQQ y detector E
+
+TGeoVolume *E_Sector1 = gGeoManager->MakeTubs("siliconE_Sector1", silicon, 1.8 / 2, 10.0 / 2, E_detector_thickness / 2, 4, 86);
+gGeoMan->GetVolume(geoVersion)
+   ->AddNode(E_Sector1, 31,
+             new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target + 0.1/2 + E_detector_distance + E_detector_thickness/2, 
+                                new TGeoRotation("rE1", 0, 0, 0)));
+E_Sector1->SetLineColor(kBlue);
+
+TGeoVolume *E_Sector2 = gGeoManager->MakeTubs("siliconE_Sector2", silicon, 1.8 / 2, 10.0 / 2, E_detector_thickness / 2, 4, 86);
+gGeoMan->GetVolume(geoVersion)
+   ->AddNode(E_Sector2, 32,
+             new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target + 0.1/2 + E_detector_distance + E_detector_thickness/2, 
+                                new TGeoRotation("rE2", 0, 0, 90)));
+E_Sector2->SetLineColor(kBlue);
+
+TGeoVolume *E_Sector3 = gGeoManager->MakeTubs("siliconE_Sector3", silicon, 1.8 / 2, 10.0 / 2, E_detector_thickness / 2, 4, 86);
+gGeoMan->GetVolume(geoVersion)
+   ->AddNode(E_Sector3, 33,
+             new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target + 0.1/2 + E_detector_distance + E_detector_thickness/2, 
+                                new TGeoRotation("rE3", 0, 0, 180)));
+E_Sector3->SetLineColor(kBlue);
+
+TGeoVolume *E_Sector4 = gGeoManager->MakeTubs("siliconE_Sector4", silicon, 1.8 / 2, 10.0 / 2, E_detector_thickness / 2, 4, 86);
+gGeoMan->GetVolume(geoVersion)
+   ->AddNode(E_Sector4, 34,
+             new TGeoCombiTrans(0, 0, Recoil_Z_dist_from_target + 0.1/2 + E_detector_distance + E_detector_thickness/2, 
+                                new TGeoRotation("rE4", 0, 0, 270)));
+E_Sector4->SetLineColor(kBlue);
+
+
+/*
+   // Definir dimensiones de la caja para He_600torr
+   Double_t box_x = 200.0;  // Ajusta según las dimensiones de tu detector
+   Double_t box_y = 200.0;  // Ajusta según las dimensiones de tu detector
+   Double_t box_z = 300.0;  // Ajusta según las dimensiones de tu detector
+
+   // Crear la caja que cubrirá todo el setup
+   TGeoVolume *hebajatorrVol = gGeoManager->MakeBox("He_bajatorrVol", He_bajatorr, box_x / 2, box_y / 2, box_z / 2);
+
+   // Añadir el volumen de He_600torr al volumen principal (top)
+   gGeoMan->GetVolume(geoVersion)
+      ->AddNode(hebajatorrVol, 1, new TGeoTranslation(0, 0, 0));  // Centrado en el origen
+*/
 
    // Annular recoil detectors PCB Support
    float PCB_thickness = 0.5; // cm
@@ -340,10 +388,10 @@ TGeoVolume *create_detector()
    /*TGeoVolume *target2 = gGeoManager->MakeBox("siliconTarget2", silicon,  100.0/2, 100.0/2, 0.0001/2);
    gGeoMan->GetVolume(geoVersion)->AddNode(target2,33, new TGeoTranslation(0.0,0.0,-1.0));
    target2->SetLineColor(kGray+1);*/
-
-   /*TGeoVolume *drift_volume = gGeoManager->MakeTube("silicon_drift_volume",vacuum,0.0/2, 100/2, 100.0/2);
+/*
+   TGeoVolume *drift_volume = gGeoManager->MakeTube("silicon_drift_volume",vacuum,0.0/2, 200/2, 250.0/2);
    gGeoMan->GetVolume(geoVersion)->AddNode(drift_volume,34, new TGeoTranslation(0,0,-5.0));
-   drift_volume->SetTransparency(80);*/
-
+   drift_volume->SetTransparency(80);
+*/
    return siliconYZL_1;
 }
