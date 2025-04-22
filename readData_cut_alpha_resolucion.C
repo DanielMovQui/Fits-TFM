@@ -6,7 +6,7 @@ Float_t rdt[8];
 Float_t x = 0;
 Float_t thetaCM = 0;
 
-void readData_cut_alpha()
+void readData_cut_alpha_resolucion()
 {
 TFile *f = new TFile("h082_10BDP_trace_run013_015-019_025-041.root");
 TTree *tree = (TTree*)f->Get("tree");
@@ -171,12 +171,6 @@ auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
    cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
 
 
-
-
-
-
-
-
 //Histograms
 TH1F* coinTimeH = new TH1F("coinTimeH","coinTimeH",1000,-1000,1000);
 
@@ -192,7 +186,7 @@ TH1F* exH[24];
 for (auto i = 0; i < 24; i++)
       exH[i] = new TH1F(Form("exH[%i]", i), Form("exH[%i]", i), 1000, -2, 18); 
 
-TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);      
+TH1F* exTotalH = new TH1F("exTotalH","exTotalH",600,-2,18);      
 
 
  Long64_t nentries = tree->GetEntries();
@@ -212,11 +206,11 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
       if (x < -0.95 || x > 0.95 || thetaCM < 10 || e[detID] < 1)
         continue;
 
-    //if (!cutProtonRecoil1->IsInside(rdt[0],rdt[1])  && !cutProtonRecoil2->IsInside(rdt[2],rdt[3]) && !cutProtonRecoil3->IsInside(rdt[4],rdt[5]) && !cutProtonRecoil4->IsInside(rdt[6],rdt[7]))
-      //continue; 
+   // if (!cutProtonRecoil1->IsInside(rdt[0],rdt[1])  && !cutProtonRecoil2->IsInside(rdt[2],rdt[3]) && !cutProtonRecoil3->IsInside(rdt[4],rdt[5]) && !cutProtonRecoil4->IsInside(rdt[6],rdt[7]))
+    //  continue; 
 
-     //if (!cutBoronRecoil1->IsInside(rdt[0],rdt[1])  && !cutBoronRecoil2->IsInside(rdt[2],rdt[3]) && !cutBoronRecoil3->IsInside(rdt[4],rdt[5]) && !cutBoronRecoil4->IsInside(rdt[6],rdt[7]))
-      //continue; 
+     if (!cutBoronRecoil1->IsInside(rdt[0],rdt[1])  && !cutBoronRecoil2->IsInside(rdt[2],rdt[3]) && !cutBoronRecoil3->IsInside(rdt[4],rdt[5]) && !cutBoronRecoil4->IsInside(rdt[6],rdt[7]))
+      continue; 
     
       exTotalH->Fill(Ex);
 
@@ -260,13 +254,13 @@ gROOT->SetBatch(kFALSE);
 
 */
 
-TF1 *g1 = new TF1("m1", "gaus", 4.3, 4.7);
+TF1 *g1 = new TF1("m1", "gaus", 4.2, 4.75);
 
 // Definir parámetros iniciales para cada gaussiana
-g1->SetParameters(100, 4.44, 0.1);  // Parámetros iniciales: amplitud, media, desviación estándar
+g1->SetParameters(100, 4.45, 0.1);  // Parámetros iniciales: amplitud, media, desviación estándar
 
 // The total is the sum of the five, each has 3 parameters
-TF1 *total = new TF1("mstotal", "gaus(0)", 4.3, 4.7);
+TF1 *total = new TF1("mstotal", "gaus(0)", 4.2, 4.75);
 
 // Fit each function and add it to the list of functions
 exTotalH->Fit(g1, "R");
@@ -284,7 +278,7 @@ total->SetParName(1, "Mean1");
 total->SetParName(2, "Sigma1");
 
 //total->SetParLimits(0, )
-total->SetParLimits(1, 4.4, 4.5); 
+total->SetParLimits(1, 4.2, 4.75); 
 total->SetParLimits(2, 0.01, 0.300);
 
 // Ajustar solo la función total y desactivar la visualización de la línea de ajuste resultante
@@ -301,7 +295,7 @@ Double_t par_total[3];
 total->GetParameters(par_total);
 
 // Crear nuevas funciones Gaussianas con los parámetros ajustados
-TF1 *new_g1 = new TF1("new_m1", "gaus", 4.3, 4.7);
+TF1 *new_g1 = new TF1("new_m1", "gaus", 4.2, 4.75);
 
 // Establecer los parámetros ajustados en las nuevas funciones
 new_g1->SetParameters(par_total);
@@ -319,4 +313,4 @@ new_g1->Draw("SAME");
 // Mostrar el Canvas
 gPad->Update();
 
-
+}

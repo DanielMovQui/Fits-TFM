@@ -1,3 +1,17 @@
+#include <TMath.h> 
+#include <iostream>
+#include <cmath> 
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TCutG.h>
+#include <TF1.h>
+#include <TROOT.h>
+#include <TPad.h>
+#include <math.h>
+#include <TLegend.h>
+
 Float_t Ex = 0;
 Int_t detID = 0;
 Float_t coinTime = 0;
@@ -79,97 +93,67 @@ auto cutProtonRecoil4 = new TCutG("CUTPROTONRECOIL4",6);
    cutProtonRecoil4->SetPoint(4,3194.85,1389.366);
    cutProtonRecoil4->SetPoint(5,3196.594,1393.424);
 
-auto cutBoronRecoil1 = new TCutG("CUTBORONRECOIL1",19);
+auto cutBoronRecoil1 = new TCutG("cutBoronRecoil1",8);
    cutBoronRecoil1->SetVarX("rdtH[0]");
    cutBoronRecoil1->SetVarY("");
    cutBoronRecoil1->SetTitle("Graph");
    cutBoronRecoil1->SetFillStyle(1000);
-   cutBoronRecoil1->SetPoint(0,128.5845,5519.572);
-   cutBoronRecoil1->SetPoint(1,437.6618,4705.767);
-   cutBoronRecoil1->SetPoint(2,976.4588,3987.703);
-   cutBoronRecoil1->SetPoint(3,1749.152,3221.769);
-   cutBoronRecoil1->SetPoint(4,2434.134,2663.276);
-   cutBoronRecoil1->SetPoint(5,2881.043,2455.835);
-   cutBoronRecoil1->SetPoint(6,3014.698,2535.62);
-   cutBoronRecoil1->SetPoint(7,3378.073,2415.943);
-   cutBoronRecoil1->SetPoint(8,3453.254,2128.718);
-   cutBoronRecoil1->SetPoint(9,3373.896,1801.6);
-   cutBoronRecoil1->SetPoint(10,3236.065,1761.708);
-   cutBoronRecoil1->SetPoint(11,2642.97,2009.04);
-   cutBoronRecoil1->SetPoint(12,1711.562,2671.254);
-   cutBoronRecoil1->SetPoint(13,851.1572,3397.296);
-   cutBoronRecoil1->SetPoint(14,178.7051,4370.67);
-   cutBoronRecoil1->SetPoint(15,45.05008,4681.831);
-   cutBoronRecoil1->SetPoint(16,15.81304,5288.196);
-   cutBoronRecoil1->SetPoint(17,86.81729,5551.485);
-   cutBoronRecoil1->SetPoint(18,128.5845,5519.572); 
+   cutBoronRecoil1->SetPoint(0,65.059,4708.98);
+   cutBoronRecoil1->SetPoint(1,410.621,3944.01);
+   cutBoronRecoil1->SetPoint(2,2157.11,2218.75);
+   cutBoronRecoil1->SetPoint(3,3333.89,1795.57);
+   cutBoronRecoil1->SetPoint(4,2913.61,2414.06);
+   cutBoronRecoil1->SetPoint(5,46.38,5083.33);
+   cutBoronRecoil1->SetPoint(6,93.0775,4660.16);
+   cutBoronRecoil1->SetPoint(7,65.059,4708.98);
+   cutBoronRecoil1->Draw(""); 
 
-auto cutBoronRecoil2 = new TCutG("CUTBORONRECOIL2",16);
+auto cutBoronRecoil2 = new TCutG("CUTBORONRECOIL2",8);
    cutBoronRecoil2->SetVarX("rdtH[1]");
    cutBoronRecoil2->SetVarY("");
    cutBoronRecoil2->SetTitle("Graph");
    cutBoronRecoil2->SetFillStyle(1000);
-   cutBoronRecoil2->SetPoint(0,193.6272,5099.459);
-   cutBoronRecoil2->SetPoint(1,737.4532,4212.577);
-   cutBoronRecoil2->SetPoint(2,1289.646,3605.343);
-   cutBoronRecoil2->SetPoint(3,2004.986,2950.169);
-   cutBoronRecoil2->SetPoint(4,2540.446,2614.592);
-   cutBoronRecoil2->SetPoint(5,2967.14,2510.723);
-   cutBoronRecoil2->SetPoint(6,3301.802,2406.854);
-   cutBoronRecoil2->SetPoint(7,3276.703,1951.428);
-   cutBoronRecoil2->SetPoint(8,2653.394,1943.438);
-   cutBoronRecoil2->SetPoint(9,1661.958,2662.531);
-   cutBoronRecoil2->SetPoint(10,616.1382,3637.302);
-   cutBoronRecoil2->SetPoint(11,105.7783,4508.204);
-   cutBoronRecoil2->SetPoint(12,26.29606,4955.64);
-   cutBoronRecoil2->SetPoint(13,201.9937,5115.439);
-   cutBoronRecoil2->SetPoint(14,201.9937,5115.439);
-   cutBoronRecoil2->SetPoint(15,193.6272,5099.459); 
+   cutBoronRecoil2->SetPoint(0,32.3707,4660.16);
+   cutBoronRecoil2->SetPoint(1,1302.54,2739.58);
+   cutBoronRecoil2->SetPoint(2,3067.71,1567.71);
+   cutBoronRecoil2->SetPoint(3,3086.39,1990.89);
+   cutBoronRecoil2->SetPoint(4,2768.85,2479.17);
+   cutBoronRecoil2->SetPoint(5,23.0312,5115.89);
+   cutBoronRecoil2->SetPoint(6,41.7102,4578.78);
+   cutBoronRecoil2->SetPoint(7,32.3707,4660.16);
+   cutBoronRecoil2->Draw("");
 
-auto cutBoronRecoil3 = new TCutG("CUTBORONRECOIL3",16);
+auto cutBoronRecoil3 = new TCutG("CUTBORONRECOIL3",9);
    cutBoronRecoil3->SetVarX("rdtH[2]");
    cutBoronRecoil3->SetVarY("");
    cutBoronRecoil3->SetTitle("Graph");
    cutBoronRecoil3->SetFillStyle(1000);
-   cutBoronRecoil3->SetPoint(0,142.6864,5002.586);
-   cutBoronRecoil3->SetPoint(1,544.0122,4525.102);
-   cutBoronRecoil3->SetPoint(2,1048.773,3821.015);
-   cutBoronRecoil3->SetPoint(3,2045.881,3011.72);
-   cutBoronRecoil3->SetPoint(4,2790.609,2550.422);
-   cutBoronRecoil3->SetPoint(5,3138.149,2518.05);
-   cutBoronRecoil3->SetPoint(6,3452.59,2323.82);
-   cutBoronRecoil3->SetPoint(7,3460.865,1789.685);
-   cutBoronRecoil3->SetPoint(8,2956.104,1708.756);
-   cutBoronRecoil3->SetPoint(9,2401.696,2032.474);
-   cutBoronRecoil3->SetPoint(10,345.418,3982.874);
-   cutBoronRecoil3->SetPoint(11,97.17527,4427.986);
-   cutBoronRecoil3->SetPoint(12,64.07623,4929.749);
-   cutBoronRecoil3->SetPoint(13,134.4117,5018.772);
-   cutBoronRecoil3->SetPoint(14,134.4117,5018.772);
-   cutBoronRecoil3->SetPoint(15,142.6864,5002.586);
+   cutBoronRecoil3->SetPoint(0,74.3985,4529.95);
+   cutBoronRecoil3->SetPoint(1,2054.37,2121.09);
+   cutBoronRecoil3->SetPoint(2,3361.91,1567.71);
+   cutBoronRecoil3->SetPoint(3,3305.87,1909.51);
+   cutBoronRecoil3->SetPoint(4,2866.91,2446.61);
+   cutBoronRecoil3->SetPoint(5,149.115,4936.85);
+   cutBoronRecoil3->SetPoint(6,93.0775,4481.12);
+   cutBoronRecoil3->SetPoint(7,93.0775,4481.12);
+   cutBoronRecoil3->SetPoint(8,74.3985,4529.95);
+   cutBoronRecoil3->Draw("");
 
-auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",17);
+auto cutBoronRecoil4 = new TCutG("CUTBORONRECOIL4",9);
    cutBoronRecoil4->SetVarX("rdtH[3]");
    cutBoronRecoil4->SetVarY("");
    cutBoronRecoil4->SetTitle("Graph");
    cutBoronRecoil4->SetFillStyle(1000);
-   cutBoronRecoil4->SetPoint(0,180.9049,5017.467);
-   cutBoronRecoil4->SetPoint(1,805.8984,4237.362);
-   cutBoronRecoil4->SetPoint(2,1377.788,3565.144);
-   cutBoronRecoil4->SetPoint(3,2174.348,2876.327);
-   cutBoronRecoil4->SetPoint(4,2766.662,2486.275);
-   cutBoronRecoil4->SetPoint(5,3085.286,2436.481);
-   cutBoronRecoil4->SetPoint(6,3346.721,2411.584);
-   cutBoronRecoil4->SetPoint(7,3407.995,2129.418);
-   cutBoronRecoil4->SetPoint(8,3277.278,1764.262);
-   cutBoronRecoil4->SetPoint(9,2774.832,1855.551);
-   cutBoronRecoil4->SetPoint(10,1937.422,2270.501);
-   cutBoronRecoil4->SetPoint(11,585.3125,3706.227);
-   cutBoronRecoil4->SetPoint(12,160.4803,4353.548);
-   cutBoronRecoil4->SetPoint(13,13.42304,4834.89);
-   cutBoronRecoil4->SetPoint(14,58.35721,5025.766);
-   cutBoronRecoil4->SetPoint(15,184.9899,5025.766);
-   cutBoronRecoil4->SetPoint(16,180.9049,5017.467);
+   cutBoronRecoil4->SetPoint(0,41.7102,4692.71);
+   cutBoronRecoil4->SetPoint(1,1106.41,3097.66);
+   cutBoronRecoil4->SetPoint(2,2563.38,1828.12);
+   cutBoronRecoil4->SetPoint(3,3329.22,1665.36);
+   cutBoronRecoil4->SetPoint(4,3198.46,1974.61);
+   cutBoronRecoil4->SetPoint(5,2815.54,2511.72);
+   cutBoronRecoil4->SetPoint(6,41.7102,5115.89);
+   cutBoronRecoil4->SetPoint(7,41.7102,4660.16);
+   cutBoronRecoil4->SetPoint(8,41.7102,4692.71);
+   cutBoronRecoil4->Draw("");
 
 
 //Histograms
@@ -187,7 +171,7 @@ TH1F* exH[24];
 for (auto i = 0; i < 24; i++)
       exH[i] = new TH1F(Form("exH[%i]", i), Form("exH[%i]", i), 1000, -2, 18); 
 
-TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);      
+TH1F* exTotalH = new TH1F("exTotalH","exTotalH",100,11,15);      
 
 
  Long64_t nentries = tree->GetEntries();
@@ -204,7 +188,7 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
 
       coinTimeH->Fill(coinTime);
 
-      if (x < -0.95 || x > 0.95 || thetaCM < 10 || e[detID] < 1)
+      if (x < -0.95 || x > 0.95 || thetaCM < 10|| e[detID] < 1)
         continue;
 
     //if (!cutProtonRecoil1->IsInside(rdt[0],rdt[1])  && !cutProtonRecoil2->IsInside(rdt[2],rdt[3]) && !cutProtonRecoil3->IsInside(rdt[4],rdt[5]) && !cutProtonRecoil4->IsInside(rdt[6],rdt[7]))
@@ -224,6 +208,26 @@ TH1F* exTotalH = new TH1F("exTotalH","exTotalH",300,-2,18);
         rdtH[i]->Fill(rdt[i*2],rdt[i*2+1]);
 
   }//events
+/*
+  double binEfficiency10k[60] = {
+    0.3828, 0.3859, 0.3891, 0.3910, 0.3934, 0.3937, 0.3945, 0.3905, 0.3888, 0.3890, 0.3855, 0.3835, 0.3804, 0.3803, 0.3770, 0.3745, 0.3695, 0.3637, 0.3645, 0.3659, 0.3652, 0.3591, 0.3518, 0.3489, 0.3463, 0.3433, 0.3427, 0.3434, 0.3481, 0.3483, 0.3486, 0.3416, 0.3417, 0.3371, 0.3314, 0.3336, 0.3315, 0.3287, 0.3246, 0.3205, 
+    0.3210, 0.3158, 0.3154, 0.3097, 0.3091, 0.3002, 0.2977, 0.2960, 0.2984, 0.3032, 0.3053, 0.3014, 0.2991, 0.2934, 0.2894, 0.2862, 0.2864, 0.2820, 0.2778, 0.2773
+    };
+
+for (int i = 1; i <= 60 ; i++) {  
+    int efficiencyIndex = i - 1 ;
+    double efficiency = binEfficiency10k[efficiencyIndex];
+      double content = exTotalH->GetBinContent(i);
+      double error = exTotalH->GetBinError(i);
+      double content_real = content / efficiency;
+      exTotalH->SetBinContent(i, content_real);    
+    std::cout << "Content of the bin:"<< content<<"\n";
+      std::cout << "Content of the bin efficiency:"<< content_real<<"\n";
+      std::cout << "Efficiency of the bin:"<< efficiency<<"\n";
+
+}
+
+*/
 
 gROOT->SetBatch(kFALSE);
 
@@ -237,8 +241,8 @@ for (int i = 0; i < sizeof(selectedIndices) / sizeof(selectedIndices[0]); ++i) {
     c1->cd(i + 1);
     exH[index]->Draw();
 }
-*/
-/*
+
+
   TCanvas *c1 = new TCanvas();
   c1->Divide(6,4);
     for(auto i=0;i<24;++i){
@@ -281,7 +285,7 @@ for (int i = 0; i < sizeof(selectedIndices) / sizeof(selectedIndices[0]); ++i) {
   TCanvas *c5 = new TCanvas();
   exTotalH->Draw();
 */
-
+/*
 TF1 *bw1 = new TF1("m1", "[0] / ((x * x - [1] * [1]) * (x * x - [1] * [1]) + [1] * [1] * [2] * [2])", 11.2, 12.0);
 TF1 *bw2 = new TF1("m2", "[3] / ((x * x - [4] * [4]) * (x * x - [4] * [4]) + [4] * [4] * [5] * [5])", 11.5, 12.5);
 TF1 *bw3 = new TF1("m3", "[6] / ((x * x - [7] * [7]) * (x * x - [7] * [7]) + [7] * [7] * [8] * [8])", 12.0, 13.0);
@@ -360,13 +364,14 @@ exTotalH->Fit(total, "R+");
 total->SetLineColor(kRed);
 total->SetLineWidth(2);
 total->SetNpx(5000);
-exTotalH->SetTitle("Energy distribution ^{10}B"); 
+*/
+exTotalH->SetTitle("Energy distribution ^{10}B + n, ThetaCM = (40, 45)"); 
 exTotalH->SetXTitle("E (MeV)");
 exTotalH->SetYTitle("Counts");
 // Dibujar solo la línea de ajuste resultante
 exTotalH->Draw("HIST");
-total->Draw("SAME");
-
+//total->Draw("SAME");
+/*
 // Obtener los parámetros ajustados de la función total
 Double_t par_total[18];
 total->GetParameters(par_total);
@@ -432,18 +437,18 @@ new_bw3->Draw("SAME");
 new_bw4->Draw("SAME");
 new_bw5->Draw("SAME");
 new_bw6->Draw("SAME");
-
+*/
 // Configurar la leyenda
 TLegend *legend = new TLegend(0.6, 0.6, 0.9, 0.9); // Coordenadas (x1, y1, x2, y2) donde x1,y1 son esquina inferior izquierda y x2,y2 son esquina superior derecha en fracción del canvas
 legend->AddEntry(exTotalH, "Experimental Data"); // Agregar entrada para los datos experimentales
-legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
-legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
+//legend->AddEntry(new_bw1, "BW individual fits"); // Agregar entrada para la primera función BW ajustada
+//legend->AddEntry(total, "Total Fit"); // Agregar entrada para el ajuste total
 legend->SetBorderSize(0); // Sin borde
 legend->Draw(); // Dibujar la leyenda
 
 // Mostrar el Canvas
 gPad->Update();
-
+/*
 // Calcular las integrales de cada función sobre su dominio
 double integral1 = new_bw1->Integral(10, 15);
 double integral2 = new_bw2->Integral(10, 15);
@@ -459,5 +464,7 @@ std::cout << "Integral de new_bw3 en [11, 14]: " << integral3 << std::endl;
 std::cout << "Integral de new_bw4 en [11, 15]: " << integral4 << std::endl;
 std::cout << "Integral de new_bw5 en [11, 15]: " << integral5 << std::endl;
 std::cout << "Integral de new_bw6 en [11, 15]: " << integral6 << std::endl;
+
+*/
 }
 
