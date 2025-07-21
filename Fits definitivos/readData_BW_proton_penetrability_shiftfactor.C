@@ -35,7 +35,12 @@ Float_t x[24];
 Float_t thetaCM = 0;
 
 const double r = 4.1 * 1.0e-15;
+double solid_angle = 1.744846665964482;
+double projectiles = 7.19e12;
+double targets = 7*10e22*0.00010752688172043011;
+double bin_width = 0.1591;
 
+double normalization_factor = solid_angle*projectiles*targets*bin_width;
 // Breit-Wigner standard function
 double BreitWigner(double E, double E0, double Gamma) {
   return Gamma / ((E - E0) * (E - E0) + pow(Gamma / 2, 2));
@@ -194,7 +199,7 @@ double TotalFunction(double *x, double *par) {
   double total = 0.0;
   // Número de funciones BW
   const int numBW = 6;
-  int l_values[6] = {2, 0, 2, 0, 0, 2};
+  int l_values[6] = {2, 0, 2, 0, 0, 0};
   for (int i = 0; i < numBW; i++) {
     total += BWModificada(
         &E, par + i * 4, l_values[i], i); 
@@ -202,7 +207,7 @@ double TotalFunction(double *x, double *par) {
 
   int bin_index = static_cast<int>((E - 11) / (14.5 - 11) * 22);
   if (bin_index >= 0 && bin_index < 22) {
-    total += binContents[bin_index];
+    total += binContents_proton_10000[bin_index]*10e30 / (normalization_factor);
   }
   return total;
 }
@@ -442,11 +447,14 @@ double binEfficiency10k[] = {1, 1, 0.1339, 0.1603, 0.16, 0.1543, 0.1485, 0.1435,
 for (int i = 1; i <= 22 ; i++) {  
   int efficiencyIndex = i - 1 ;
   double efficiency = binEfficiency10k[efficiencyIndex];
-    double content = exTotalH->GetBinContent(i);
-    double error = exTotalH->GetBinError(i);
-    double content_real = content / efficiency;
-    exTotalH->SetBinContent(i, content_real); 
-    exTotalH->SetBinError(i, error/efficiency);
+  double content = exTotalH->GetBinContent(i);
+      double error = exTotalH->GetBinError(i);
+    double content_real = content * 10e30 / (normalization_factor*efficiency);
+      double error_stat = error* 10e30/(normalization_factor*efficiency);
+      double error_sist = content_real * 0.1;
+      double error_total = sqrt(error_stat*error_stat + error_sist*error_sist);
+      exTotalH->SetBinContent(i, content_real); 
+      exTotalH->SetBinError(i, error_total);
 }
 
 /*
@@ -473,7 +481,7 @@ gROOT->SetBatch(kFALSE);
 TH1F *h = new TH1F("", "", 22, 11, 14.5);
 
 for (int i = 1; i <= 22; i++) {
-    h->SetBinContent(i, binContents[i-1]);
+    h->SetBinContent(i, binContents[i-1]*10e30/normalization_factor);
 }
 
 TF1 *bw1 = new TF1("bw1", [=](double *x, double *par) { 
@@ -497,7 +505,7 @@ TF1 *bw5 = new TF1("bw5", [=](double *x, double *par) {
 }, 11.23, 14.5, 4);
 
 TF1 *bw6 = new TF1("bw6", [=](double *x, double *par) { 
-    return BWModificada(x, par, 2, 5); 
+    return BWModificada(x, par, 0, 5); 
 }, 11.23, 14.5, 4);
 
 
@@ -536,27 +544,27 @@ for (int i = 0; i < 6; i++) {
     total->SetParName(i * 4 + 3, Form("Sigma%d", i + 1));
 }
 
-total->SetParLimits(0, 1, 100);
+total->SetParLimits(0, 0., 100);
 total->FixParameter(1, 11.452);
 total->FixParameter(2, 0.024);
 total->FixParameter(3, 0.0657);
-total->SetParLimits(4, 1, 100);
+total->SetParLimits(4, 0., 100);
 total->FixParameter(5, 12.1);
 total->FixParameter(6, 0.261);
 total->FixParameter(7, 0.0657);
-total->SetParLimits(8, 1, 100);
+total->SetParLimits(8, 0., 100);
 total->FixParameter(9, 12.51);
 total->FixParameter(10, 0.288);
 total->FixParameter(11, 0.0657);
-total->SetParLimits(12, 1, 100);
+total->SetParLimits(12, 0., 100);
 total->FixParameter(13, 13.25);
 total->FixParameter(14, 0.160);
 total->FixParameter(15, 0.0657);
-total->SetParLimits(16, 1, 100);
+total->SetParLimits(16, 0.32, 100);
 total->FixParameter(17, 13.57);
 total->FixParameter(18, 0.290);
 total->FixParameter(19, 0.0657);
-total->SetParLimits(20, 1, 100);
+total->SetParLimits(20, 0., 100);
 total->FixParameter(21, 13.9);
 total->FixParameter(22, 0.273);
 total->FixParameter(23, 0.0657);
@@ -595,9 +603,9 @@ total->SetLineColor(kRed);
 total->SetLineWidth(2);
 total->SetNpx(10000);
 
-exTotalH->SetTitle("Energy distribution ^{10}Be + p"); 
+exTotalH->SetTitle("Energy distribution ^{10}Be + p channel"); 
 exTotalH->SetXTitle("E (MeV)");
-exTotalH->SetYTitle("Counts");
+exTotalH->SetYTitle("#frac{d#sigma}{d#Omega #upoint dE} [#frac{#mub}{sr #upoint MeV}]");
 exTotalH->SetStats(0);
 exTotalH->GetXaxis()->SetRangeUser(11.23, 14.5);
 // Dibujar solo la línea de ajuste resultante
@@ -632,7 +640,7 @@ TF1 *new_bw5 = new TF1("new_bw5", [=](double *x, double *par_total) {
 }, 11.23, 14.5, 4);
 
 TF1 *new_bw6 = new TF1("new_bw6", [=](double *x, double *par_total) {
-  return BWModificada(x, par_total, 2, 5);
+  return BWModificada(x, par_total, 0, 5);
 }, 11.23, 14.5, 4);
 
 new_bw1->SetNpx(10000);

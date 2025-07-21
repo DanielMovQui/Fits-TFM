@@ -27,6 +27,14 @@ Float_t rdt[8];
 Float_t x[24];
 Float_t thetaCM = 0;
 
+double solid_angle = 1.744846665964482;
+double projectiles = 7.19e12;
+double targets = 7*10e22*0.00010752688172043011;
+double bin_width = 0.0667;
+
+double normalization_factor = solid_angle*projectiles*targets*bin_width;
+
+
 // Breit-Wigner standard function
 double BreitWigner(double E, double E0, double Gamma) {
   return Gamma / ((E - E0) * (E - E0) + pow(Gamma / 2, 2));
@@ -45,7 +53,7 @@ double ConvolutedBW(double *x, double *par, double E_min, double E_max) {
   double Gamma0 = par[2];
   double sigma = par[3];
 
-  int n_points = 100; // Number of points for numerical integration
+  int n_points = 200; // Number of points for numerical integration
   // Limits for the integracion in each point of the function
   double lower = E - sigma; 
   double upper = E + sigma;
@@ -57,7 +65,7 @@ double ConvolutedBW(double *x, double *par, double E_min, double E_max) {
   double integral = 0.0;
 // Calculation for each point
   for (int i = 0; i < n_points; ++i) {
-      double t = lower + i * step;
+      double t = lower + (i + 0.5) * step;
       double bw = BreitWigner(t, E0, Gamma0);
       double gauss = Gaussian(E, t, sigma);
       integral += bw * gauss * step;
@@ -156,7 +164,6 @@ double ConvolutedBW(double *x, double *par, double E_min, double E_max) {
  double E_min = E_min_values[bw_index];
  double E_max = E_max_values[bw_index];
  double convoluted_bw = ConvolutedBW(x, par_conv, E_min, E_max);
-
  return convoluted_bw;
 }
 
@@ -189,7 +196,7 @@ double TotalFunction(double *x, double *par) {
     // Número de funciones BW
     const int numBW = 14;
 
-    int l_values[14] = {1, 0, 0, 0, 1, 0, 0, 2, 0, 1, 2, 1, 0, 0};
+    int l_values[14] = {1, 0, 0, 2, 1, 0, 2, 2, 0, 1, 2, 1, 0, 0};
   for (int i = 0; i < numBW; i++) {
     total += BWModificada(
         &E, par + i * 4, l_values[i],
@@ -198,7 +205,7 @@ double TotalFunction(double *x, double *par) {
 // Sumar el contenido del bin correspondiente
     int bin_index = static_cast<int>((E - 8.5) / (14.5 - 8.5) * 90);
     if (bin_index >= 0 && bin_index < 90) {
-        total += binContents[bin_index];
+        total += binContents[bin_index]*10e30 / (normalization_factor);;
     }
 
 
@@ -445,7 +452,7 @@ exTotalH->Fill(Ex);
    };
    */
     // Para el GS sin coincidencia ya hechas las cuentas.
-   double binEfficiency10k[] = {1,1,1,1, 0.1095, 0.1422, 0.1501, 0.1561, 0.1591, 0.1604, 0.1593, 0.1570, 0.1532, 0.1531, 0.1527, 
+   double binEfficiency10k[] = {1,1,1,0.1, 0.1095, 0.1422, 0.1501, 0.1561, 0.1591, 0.1604, 0.1593, 0.1570, 0.1532, 0.1531, 0.1527, 
     0.1527, 0.1503, 0.1464, 0.1443, 0.1394, 0.1330, 0.1277, 0.1256, 0.1212, 0.1168, 0.1153, 0.1132, 0.1085, 0.1053, 0.1024, 0.0994, 
     0.0970, 0.0963, 0.0910, 0.0880, 0.0872, 0.0850, 0.0840, 0.0816, 0.0770, 0.0749, 0.0715, 0.0696, 0.0676, 0.0654, 0.0618, 0.0626, 
     0.0606, 0.0577, 0.0545, 0.0504, 0.0492, 0.0498, 0.0474, 0.0474, 0.0421, 0.0414, 0.0423, 0.0387, 0.0370, 0.0347, 0.0334, 0.0303,
@@ -482,7 +489,10 @@ double binEfficiency10k_coin_exc[] = {1,1,1,1,1,1,1,1,1,1, 0.1822, 0.1043, 0.059
 0.0006, 0.0007, 0.0003, 0.0004
 };
 */
-// Después de llenar el histograma exTotalH
+
+
+
+//Después de llenar el histograma exTotalH
 for (int i = 1; i <= exTotalH->GetNbinsX(); i++) {
   double binCenter = exTotalH->GetBinCenter(i);
   if (binCenter >= 8.5 && binCenter <= 14.5) {
@@ -491,9 +501,13 @@ for (int i = 1; i <= exTotalH->GetNbinsX(); i++) {
       double efficiency = binEfficiency10k[efficiencyIndex];
       if (efficiency > 0) {
         double content = exTotalH->GetBinContent(i);
-        double error = exTotalH->GetBinError(i);
-        exTotalH->SetBinContent(i, content / efficiency);
-        exTotalH->SetBinError(i, error / efficiency);
+      double error = exTotalH->GetBinError(i);
+    double content_real = content * 10e30 / (normalization_factor*efficiency);
+      double error_stat = error* 10e30/(normalization_factor*efficiency);
+      double error_sist = content_real * 0.1;
+      double error_total = sqrt(error_stat*error_stat + error_sist*error_sist);
+      exTotalH->SetBinContent(i, content_real); 
+      exTotalH->SetBinError(i, error_total);
       }
     }
   }
@@ -506,7 +520,7 @@ gROOT->SetBatch(kFALSE);
 TH1F *h = new TH1F("", "", 90, 8.5, 14.5);
 
 for (int i = 1; i <= 90; i++) {
-    h->SetBinContent(i, binContents[i-1]);
+    h->SetBinContent(i, binContents[i-1]*10e30 / (normalization_factor));
 }
 TF1 *bw1 = new TF1("bw1", [=](double *x, double *par) { 
   return BWModificada(x, par, 1, 0); 
@@ -521,7 +535,7 @@ TF1 *bw3 = new TF1("bw3", [=](double *x, double *par) {
 }, 8.67, 14.5, 4);
 
 TF1 *bw4 = new TF1("bw4", [=](double *x, double *par) { 
-  return BWModificada(x, par, 0, 3); 
+  return BWModificada(x, par, 2, 3); 
 }, 8.67, 14.5, 4);
 
 TF1 *bw5 = new TF1("bw5", [=](double *x, double *par) { 
@@ -533,7 +547,7 @@ TF1 *bw6 = new TF1("bw6", [=](double *x, double *par) {
 }, 8.67, 14.5, 4);
 
 TF1 *bw7 = new TF1("bw7", [=](double *x, double *par) { 
-    return BWModificada(x, par, 0, 6); 
+    return BWModificada(x, par, 2, 6); 
 }, 8.67, 14.5, 4);
 
 TF1 *bw8 = new TF1("bw8", [=](double *x, double *par) { 
@@ -584,7 +598,7 @@ bw14->SetParameters(300, 13.6, 0.2, 0.0657);
 TF1 *total = new TF1("mstotal", TotalFunction, 8.67, 14.5, 56);
 
 // Ajustar cada función a los datos teniendo en cuenta la anterior
-exTotalH->Fit(bw1, "RQ0+");
+exTotalH->Fit(bw1, "RQ0");
 exTotalH->Fit(bw2, "RQ0+");
 exTotalH->Fit(bw3, "RQ0+");
 exTotalH->Fit(bw4, "RQ0+");
@@ -689,59 +703,59 @@ total->SetParLimits(54, 0.2, 0.250);
 total->FixParameter(55, 0.0657);
 */
 
-total->SetParLimits(0, 1, 10000);
+total->SetParLimits(0, 0., 10000);
 total->FixParameter(1, 8.95);
 total->FixParameter(2, 0.025);
 total->FixParameter(3, 0.0657);
-total->SetParLimits(4, 1, 10000);
+total->SetParLimits(4, 0., 10000);
 total->FixParameter(5, 9.20);
 total->FixParameter(6, 0.007);
 total->FixParameter(7, 0.0657);
-total->SetParLimits(8, 1, 10000);
+total->SetParLimits(8, 0., 10000);
 total->FixParameter(9, 9.31);
 total->FixParameter(10, 0.012);
 total->FixParameter(11, 0.0657);
-total->SetParLimits(12, 1, 10000);
+total->SetParLimits(12, 0., 10000);
 total->FixParameter(13, 9.919);
 total->FixParameter(14, 0.090);
 total->FixParameter(15, 0.0657);
-total->SetParLimits(16, 1, 10000);
+total->SetParLimits(16, 0., 10000);
 total->FixParameter(17, 10.326);
 total->FixParameter(18, 0.153);
 total->FixParameter(19, 0.0657);
-total->SetParLimits(20, 1, 10000);
+total->SetParLimits(20, 0., 10000);
 total->FixParameter(21, 10.607);
 total->FixParameter(22, 0.278);
 total->FixParameter(23, 0.0657);
-total->SetParLimits(24, 1, 10000);
+total->SetParLimits(24, 0., 10000);
 total->FixParameter(25, 11.28);
 total->FixParameter(26, 0.110);
 total->FixParameter(27, 0.0657);
-total->SetParLimits(28, 1, 10000);
+total->SetParLimits(28, 0., 10000);
 total->FixParameter(29, 11.46);
-total->FixParameter(30, 0.05);
+total->FixParameter(30, 0.03);
 total->FixParameter(31, 0.0657);
-total->SetParLimits(32, 1, 10000);
+total->FixParameter(32, 3.);
 total->FixParameter(33, 11.66);
 total->FixParameter(34, 0.275);
 total->FixParameter(35, 0.0657);
-total->SetParLimits(36, 1, 10000);
+total->SetParLimits(36, 0., 10000);
 total->FixParameter(37, 11.85);
 total->FixParameter(38, 0.292);
 total->FixParameter(39, 0.0657);
-total->SetParLimits(40, 1, 10000);
+total->SetParLimits(40, 0., 10000);
 total->FixParameter(41, 12.52);
 total->FixParameter(42, 0.335);
 total->FixParameter(43, 0.0657);
-total->SetParLimits(44, 1, 10000);
+total->SetParLimits(44, 0., 10000);
 total->FixParameter(45, 12.92);
 total->FixParameter(46, 0.200);
 total->FixParameter(47, 0.0657);
-total->SetParLimits(48, 1, 10000);
+total->SetParLimits(48, 0., 10000);
 total->FixParameter(49, 13.21);
 total->FixParameter(50, 0.231);
 total->FixParameter(51, 0.0657);
-total->SetParLimits(52, 1, 10000);
+total->SetParLimits(52, 0., 10000);
 total->FixParameter(53, 13.6);
 total->FixParameter(54, 0.237);
 total->FixParameter(55, 0.0657);
@@ -754,9 +768,9 @@ total->SetLineColor(kRed);
 total->SetLineWidth(2);
 total->SetNpx(10000);
 
-exTotalH->SetTitle("Energy distribution ^{7}Li and #alpha"); 
+exTotalH->SetTitle("Energy distribution ^{7}Li + #alpha channel"); 
 exTotalH->SetXTitle("E (MeV)");
-exTotalH->SetYTitle("Counts");
+exTotalH->SetYTitle("#frac{d#sigma}{d#Omega #upoint dE} [#frac{#mub}{sr #upoint MeV}]");
 exTotalH->GetXaxis()->SetRangeUser(8.67, 14.5);
 exTotalH->SetStats(0);
 
@@ -783,7 +797,7 @@ TF1 *new_bw3 = new TF1("new_bw3", [=](double *x, double *par_total) {
 }, 8.67, 14.5, 4);
 
 TF1 *new_bw4 = new TF1("new_bw4", [=](double *x, double *par_total) { 
-  return BWModificada(x, par_total, 0, 3); 
+  return BWModificada(x, par_total, 2, 3); 
 }, 8.67, 14.5, 4);
 
 TF1 *new_bw5 = new TF1("new_bw5", [=](double *x, double *par_total) { 
@@ -795,7 +809,7 @@ TF1 *new_bw6 = new TF1("new_bw6", [=](double *x, double *par_total) {
 }, 8.67, 14.5, 4);
 
 TF1 *new_bw7 = new TF1("new_bw7", [=](double *x, double *par_total) { 
-    return BWModificada(x, par_total, 0, 6); 
+    return BWModificada(x, par_total, 2, 6); 
 }, 8.67, 14.5, 4);
 
 TF1 *new_bw8 = new TF1("new_bw8", [=](double *x, double *par_total) { 

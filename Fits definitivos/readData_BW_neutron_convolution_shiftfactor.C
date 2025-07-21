@@ -28,6 +28,13 @@ Float_t rdt[8];
 Float_t x[24];
 Float_t thetaCM = 0;
 
+double solid_angle = 1.744846665964482;
+double projectiles = 7.19e12;
+double targets = 7*10e22*0.00010752688172043011;
+double bin_width = 0.0667;
+
+double normalization_factor = solid_angle*projectiles*targets*bin_width;
+
 // Breit-Wigner standard function
 double BreitWigner(double E, double E0, double Gamma) {
     return Gamma / ((E - E0) * (E - E0) + pow(Gamma / 2, 2));
@@ -46,7 +53,7 @@ double ConvolutedBW(double *x, double *par, double E_min, double E_max) {
     double Gamma0 = par[2];
     double sigma = par[3];
 
-    int n_points = 100; // Number of points for numerical integration
+    int n_points = 200; // Number of points for numerical integration
     // Limits for the integracion in each point of the function
     double lower = E - sigma; 
     double upper = E + sigma;
@@ -186,7 +193,7 @@ double TotalFunction(double *x, double *par) {
 
     int bin_index = static_cast<int>((E - 11.46) / (14.35 - 11.46) * 10000);
     if (bin_index >= 0 && bin_index < 10000) {
-        total += binContents_neutron_10000[bin_index];
+        total += binContents_neutron_10000[bin_index]*10e30 / (normalization_factor);
     }
 
     return total;
@@ -420,6 +427,8 @@ exTotalH->Fill(Ex);
  TCanvas *c1 = new TCanvas("c1", "Plot neutron", 800, 600);
  c1->cd();
 
+ 
+
 double binEfficiency10k[] = {
     /*0.0003, 0.0003, 0.0003, 0.0002, 0.0001, 0.0003, 0.0002,*/1,1,1,1,1,1,1, 0.1856, 0.1865, 0.1831,
 0.1805, 0.1755, 0.1697, 0.1652, 0.1622, 0.1585, 0.1575, 0.1547, 0.1513, 0.1498, 0.1475, 0.1427, 0.1423, 
@@ -427,15 +436,17 @@ double binEfficiency10k[] = {
 0.1080, 0.1095, 0.1062, 0.1065, 0.1031, 0.1019, 0.0966, 0.0945, 0.0898, 0.0894, 0.0888, 0.0843, 0.0830, 
 0.0841, 0.0852, 0.0863, 0.0848, 0.0833, 0.0787, 0.0776, 0.0755, 0.0757, 0.0717, 0.0693, 0.066};
 
-
 for (int i = 1; i <= 60 ; i++) {  
     int efficiencyIndex = i - 1 ;
     double efficiency = binEfficiency10k[efficiencyIndex];
       double content = exTotalH->GetBinContent(i);
       double error = exTotalH->GetBinError(i);
-      double content_real = content / efficiency;
+      double content_real = content * 10e30 / (normalization_factor*efficiency);
+      double error_stat = error* 10e30/(normalization_factor*efficiency);
+      double error_sist = content_real * 0.1;
+      double error_total = sqrt(error_stat*error_stat + error_sist*error_sist);
       exTotalH->SetBinContent(i, content_real); 
-      exTotalH->SetBinError(i, error/efficiency);
+      exTotalH->SetBinError(i, error_total);
 }
 
 
@@ -444,7 +455,7 @@ gROOT->SetBatch(kFALSE);
 TH1F *h = new TH1F("", "", 60, 11, 15);
 
 for (int i = 1; i <= 60; i++) {
-    h->SetBinContent(i, binContents_neutron_60[i-1]);
+    h->SetBinContent(i, binContents_neutron_60[i-1]*10e30/normalization_factor);
 }
 
 // Crear las funciones BW con los parámetros adecuados
@@ -596,10 +607,10 @@ total->FixParameter(11, 0.0657);
 
 total->SetParLimits(12, 1, 10000); 
 total->FixParameter(13, 12.546); 
-total->FixParameter(14, 0.355);  
+total->FixParameter(14, 0.280);  
 total->FixParameter(15, 0.0657);
 
-total->SetParLimits(16, 1, 10000); 
+total->SetParLimits(16, 0., 10000); 
 total->FixParameter(17, 12.9); 
 total->FixParameter(18, 0.25); 
 total->FixParameter(19, 0.0657);
@@ -629,10 +640,11 @@ exTotalH->Fit(total, "R+");
 
 // Configurar opciones de visualización
 
-exTotalH->SetTitle("Energy distribution ^{10}B + n"); 
+exTotalH->SetTitle("Energy distribution of ^{10}B in neutron emission"); 
 exTotalH->SetXTitle("E (MeV)");
-exTotalH->SetYTitle("Counts");
+exTotalH->SetYTitle("#frac{d#sigma}{d#Omega #upoint dE} [#frac{#mub}{sr #upoint MeV}]");
 exTotalH->GetXaxis()->SetRangeUser(11.45, 14.3);
+//exTotalH->GetYaxis()->SetRangeUser();
 exTotalH->SetLineColor(kBlue);
 exTotalH->Draw("E1");
 exTotalH->SetStats(0);
@@ -776,7 +788,7 @@ legend->Draw(); // Dibujar la leyenda
 
 // Mostrar el Canvas
 gPad->Update();
-/*
+
 // Calcular la integral de cada función Breit-Wigner ajustada
 Double_t integral_bw1 = new_bw1->Integral(11, 15) *15;
 Double_t integral_bw2 = new_bw2->Integral(11, 15) *15;
@@ -798,6 +810,6 @@ cout << "Integral of new_bw6: " << integral_bw6 << endl;
 cout << "Integral of new_bw7: " << integral_bw7 << endl;
 cout << "Integral of new_bw8: " << integral_bw8 << endl;
 cout << "Integral of new_bw9: " << integral_bw9 << endl;
-*/
+
 }
 
