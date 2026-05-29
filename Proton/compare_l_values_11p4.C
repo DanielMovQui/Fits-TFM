@@ -16,7 +16,7 @@
 #include "TStyle.h"
 #include "TROOT.h"
 #include "TCutG.h"
-#include "./Phase Space/binContents_proton_10000.C"
+#include "binContents_proton_10000.C"
 #include "penetrabilities_L_0.C"
 #include "penetrabilities_L_1.C"
 #include "penetrabilities_L_2.C"
